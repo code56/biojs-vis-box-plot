@@ -1,0 +1,455 @@
+[33mcommit 354dc8bfee9eaa94187a4aede018e828688153fd[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Wed Sep 9 10:17:22 2015 +1000
+
+    further improvements to legend
+
+[33mcommit d4b511abf4bd06cc10cdf6a889dcf0f9b8a0bc33[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Wed Sep 9 10:11:21 2015 +1000
+
+    Creating legend so it can accomadate large numbers of probes. Currently accomadtes 80
+
+[33mcommit d32b9cce6aad211c7606f9e32734effb16d4e9b0[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Tue Sep 8 18:28:04 2015 +1000
+
+    Starting to write function to append a line between scatter points
+
+[33mcommit 5cb9af45132ab429c3e0df6e7c6480c3366504c3[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Sep 7 13:09:43 2015 +1000
+
+    Legend now supports long names by increasing the size of the canvas
+
+[33mcommit a6d83cc844140a91191c1c626d630ebc455e214a[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Sep 7 10:28:04 2015 +1000
+
+    have changed the error bars to only display when error > 1%.
+
+[33mcommit ec0d9d74f8cb1cf8f767c9079cc6ebb559ca07a1[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Sep 7 08:40:51 2015 +1000
+
+    starting the clecnup, switching to a new branch
+
+[33mcommit e7bfe4d5047b16e2c8f15bfcd5a8af8f439bfdc7[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Wed Sep 2 16:57:06 2015 +1000
+
+    The y axis now has black writing. Top of the grid is also now black rather than grey
+
+[33mcommit 84c143317c332ed4dec72b406895f274528c7b7b[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Wed Sep 2 13:27:49 2015 +1000
+
+    added 3 datasets to test the graph
+
+[33mcommit 36736dd8961be2de03bfb586244df891ebba1d00[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Wed Sep 2 10:13:13 2015 +1000
+
+    options.graph has been updated. Includes dt and median options.
+
+[33mcommit 0579bba80f8d54b55a796d9962aa9330ba0fb85b[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Wed Sep 2 10:12:42 2015 +1000
+
+    dt and median line have been appended to the graph. See horizontal line function
+
+[33mcommit 2df80e78edf4531d332957651cb138ea4c1ea844[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 31 16:34:29 2015 +1000
+
+    horizontal lines are not displaying properly
+
+[33mcommit 9fcbcf40d6fdfde5e35e16b67c21e44ce37fe935[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 31 16:34:01 2015 +1000
+
+    DT and med displaying on graph
+
+[33mcommit 9343b5fa149d11525093149467cd0fc1679ebaa5[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 31 15:41:33 2015 +1000
+
+    horizontal lines setup
+
+[33mcommit 8b2fbf9b143419338162d68f2169f601676a2e68[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 31 15:40:47 2015 +1000
+
+    Added the css for the horizontal lines
+
+[33mcommit ac0cdef2c3ac20de981702bc321b08a1e13c33cf[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 31 15:39:54 2015 +1000
+
+    horizontal lines setup, need to centralise the titles
+
+[33mcommit dffb0e7c17dd9dde68a0360bc2f49886ce7e5eb4[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 31 14:49:12 2015 +1000
+
+    up to date (see index.js explanation)
+
+[33mcommit 0e8aa20a9367b0a90a0377e98393581037d9cfd0[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 31 14:48:09 2015 +1000
+
+    The vertical lines now work for multiple probes. Need to check if it works for more than two sample types
+
+[33mcommit 15ee27fa063de2d90c7bc467ddb52e024f158d44[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Wed Aug 26 08:54:26 2015 +1000
+
+    Working for both datasets, for the second the order on the xaxis is the incorrect way around
+
+[33mcommit 3ab3e756d4a9684b4a56306071b021f0f290bae0[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Wed Aug 26 08:52:56 2015 +1000
+
+    Horizontal lines have been taken out. It still requires c ollumn for upr and lwr values in the dataset
+
+[33mcommit b0203d3449951d4e7f52524e2c1c80fb8c415ab1[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 24 23:04:25 2015 +1000
+
+    new data is implemented however upr and lwr are still collumns
+
+[33mcommit d4d1bbe06449f65bcb6c66c7c453a7ececead50a[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 24 23:03:23 2015 +1000
+
+    new data is implemented however two collums have been added
+
+[33mcommit d16eba8505ab249744d7321a49c25b69ada8e7f2[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 24 22:06:23 2015 +1000
+
+    changing over to new dataset
+
+[33mcommit 47ec8fdafdb9232e8787b94d038f730b1dd0c3bc[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 24 22:05:49 2015 +1000
+
+    changing over data set
+
+[33mcommit 7a454755742225d99e9694ebf5ee35eb5e0e91fc[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 17 16:25:00 2015 +1000
+
+    Added legend for graph
+
+[33mcommit f72b553c0d7958613d3379b30863e040b5522f95[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 17 16:05:25 2015 +1000
+
+    Implemented colors to specify MSC type for points
+
+[33mcommit cdd4e50e2ba259f3d98cc73e10dc41a569f33556[m
+Author: Ariane Mora <ariane.mora@uq.net.au>
+Date:   Mon Aug 17 12:11:50 2015 +1000
+
+    Added the ticks to the y axis and the label
+
+[33mcommit e2241744fced37c4e2cc8542c04781b187eaf42c[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Tue Apr 28 14:29:05 2015 +1000
+
+    Task #2084 - removing x axis tick labels completely as it causes problems in pdf
+
+[33mcommit 1f1a0a91b20b27547c80f7abc23d2b4532469d1e[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 16 13:49:32 2015 +1000
+
+    Task #1346 - svg_xml exporting fine on this one
+
+[33mcommit 30f1638feb78a977407364f1bffa33d5b4391c30[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Thu Mar 12 12:07:09 2015 +1000
+
+    Adding better documentation and updating to v0.4.0
+
+[33mcommit 0a4c9e8141ca590afbad9f149eeb4804e73048cb[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Thu Mar 12 11:55:35 2015 +1000
+
+    Adding better documentation and updating to v1.0
+
+[33mcommit 76a72827feaa3e4fe2cecd25564c8da3216bffde[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Thu Mar 12 11:54:20 2015 +1000
+
+    Adding better documentation
+
+[33mcommit 2ff6bffa074606076a5b91123497ca8e95fc5344[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Thu Mar 12 11:40:28 2015 +1000
+
+    Adding better documentation
+
+[33mcommit c97b272f43f14e9f3aa9f1b21e5bd6aaa5ae396b[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Thu Mar 12 11:38:53 2015 +1000
+
+    Adding better documentation
+
+[33mcommit fbdbae084ef1db55442d10b40bb894afff1d8e66[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Thu Mar 12 11:37:16 2015 +1000
+
+    Adding better documentation
+
+[33mcommit 153c2905a397eef621b01c6797fb8f918eef8835[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Thu Mar 12 11:36:05 2015 +1000
+
+    Adding better documentation
+
+[33mcommit bfd2945455ab3d6bd9124839d1c5b05c3397139d[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Thu Mar 12 11:33:10 2015 +1000
+
+    Adding better documentation
+
+[33mcommit 9ba32b9117441bada0afdb0437aab4b6710549ab[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Thu Mar 5 13:58:08 2015 +1000
+
+    Task #1599 - updating so that title can be set on the x axis
+
+[33mcommit a27c705771f1bfb03f93a8ae9587b91112e00113[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Thu Mar 5 07:12:06 2015 +1000
+
+    Task #1599 - make legend horizontal
+
+[33mcommit 2233ae85b771ba9e3873ea6c4deb4ef8f3cb13d3[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Wed Mar 4 15:16:35 2015 +1000
+
+    T#1599 - added ability to change the dots size
+
+[33mcommit 8067684faafb650c9346fde591270809aac305ad[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Wed Mar 4 15:12:50 2015 +1000
+
+    T#1599 - added line around dots and legend
+
+[33mcommit 8cdc3eeb0632d967e07653353840f2350ff38af8[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Wed Mar 4 12:15:59 2015 +1000
+
+    T#1599 - added new subtitle
+
+[33mcommit 05af753f7e69c1bf3b026a0ed20f17d16ef8e210[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Wed Mar 4 11:26:32 2015 +1000
+
+    T#1599 - storing example of gradient legend of colour
+
+[33mcommit bf28abbf605a8b091650ffa0701b14695e8efdef[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Wed Mar 4 10:21:14 2015 +1000
+
+    T#1599 - storing example of gradient legend of colour - working
+
+[33mcommit 2c3d89c4400f312a4656b6959777945231e6b103[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Wed Mar 4 09:55:14 2015 +1000
+
+    T#1599 - storing example of gradient legend of colour - wip
+
+[33mcommit dfe6d4fbcffb0f889efb5028b4c7ec932870e2b7[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Tue Mar 3 18:13:34 2015 +1000
+
+    T#1599 - storing example of gradient legend of colour
+
+[33mcommit cfddbad9064a72f163d43658ebf9a3dd9fe1a605[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Tue Mar 3 18:10:45 2015 +1000
+
+    T#1599 - converting to a percentage based on MSC_calls and total_subsamplings
+
+[33mcommit a8aa7d11c3838c57f3a8585057e2529ade926bf7[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Tue Mar 3 17:57:20 2015 +1000
+
+    T#1599 - clearing up the sample hover over
+
+[33mcommit 08daa33882e5067bf6e72751fe9e7980edcd7918[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Tue Mar 3 17:37:09 2015 +1000
+
+    T#1599 - clearing up the x axis labels
+
+[33mcommit 4f777dfe87c349be05ad668f69fe4a46f8fa3539[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Tue Mar 3 17:29:16 2015 +1000
+
+    T#1599 - clearing up the x axis labels
+
+[33mcommit bf11b4080fb89a72e40b28a97fee84942e59ff1c[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Tue Mar 3 16:02:23 2015 +1000
+
+    T#1599 - clearing up the x axis labels
+
+[33mcommit 5e6ab6b89be38ded9a4276a4f0a2f92f67bfef18[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Tue Mar 3 09:50:31 2015 +1000
+
+    T#1599 - making default max of 1 as per Florian
+
+[33mcommit ab6452a847cc6447c5ca1104853b74e8d60bd146[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Tue Mar 3 09:29:07 2015 +1000
+
+    T#1599 - cleaning up title
+
+[33mcommit 518d00f3da93e0c0a7f743930590f982f4c2ca89[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 13:05:26 2015 +1000
+
+    Task #1599 - removing extra folder
+
+[33mcommit a3e35858224c676b0116e2eb19917f9046b86e06[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 13:02:59 2015 +1000
+
+    Task #1599 - updating total_subsamplings
+
+[33mcommit 222d6534e27863982960d2c9a779c604f88a40b2[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 12:55:14 2015 +1000
+
+    Task #1599 - making things more flexible
+
+[33mcommit eb09070206e23b768cf3de569d563ad3e10d4c95[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 12:36:39 2015 +1000
+
+    Task #1599 - making things more flexible
+
+[33mcommit 1d331bc3ae49250512f7a6196047996de558d2c4[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 12:35:55 2015 +1000
+
+    Task #1599 - making things more flexible
+
+[33mcommit e28201c6e077f08b2d288963ff117e434ceb49b5[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 12:26:45 2015 +1000
+
+    Task #1599 - adding in colour manually and readding legends
+
+[33mcommit 94cb7a279f1b82052ece802584b0441cafbe49f8[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 12:25:46 2015 +1000
+
+    Task #1599 - adding in colour manually and readding legends
+
+[33mcommit 1e59ce9e4da8516b1b97f2c791a494f1ae4b63ea[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 12:05:26 2015 +1000
+
+    Task #1599 - adding in colour manually - removed colorbrewer
+
+[33mcommit bb80fac88868492be95546bd181ffc43aef97ca4[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 12:04:00 2015 +1000
+
+    Task #1599 - adding in colour manually
+
+[33mcommit 6e9e740383305741ed781345d51a8417f8d009d6[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 11:55:29 2015 +1000
+
+    Task #1599 - adding in colour but had to take this out to not show up on the legend
+
+[33mcommit 208a187803b20f705f6221b3f6323436b7305c87[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 11:51:56 2015 +1000
+
+    Task #1599 - adding in colour via colorbrewer Reds and RdGy
+
+[33mcommit 2d21917ec667fdd92ca71aa998d5412385280471[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 11:50:15 2015 +1000
+
+    Task #1599 - adding in colour via colorbrewer Reds and RdGy
+
+[33mcommit 6c5e865943acbcabb1fe9aaa473ee23e47067219[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 11:48:37 2015 +1000
+
+    Task #1599 - adding in colour via colorbrewer Reds and RdGy
+
+[33mcommit d48c46bfa8416f215376d25c02fe81dc80510a1b[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 11:46:34 2015 +1000
+
+    Task #1599 - adding in more columns to handle x/y msc calls
+
+[33mcommit 29b2c184b07499a4c73b4b93744d3655deb77c9b[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Mon Mar 2 09:12:29 2015 +1000
+
+    Task #1599 - adding in more keywords
+
+[33mcommit 6f603ff7c80edb025115e84289c49b85f3b06ec0[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Fri Feb 27 16:58:39 2015 +1000
+
+    T#1599 - moving dataset to data directory
+
+[33mcommit 02485b189da56f0b2293ed994d2b139ee92fc3d0[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Fri Feb 27 16:53:38 2015 +1000
+
+    T#1599 - adding css
+
+[33mcommit f600e105ed874ae5c19a2e7bd71f4c7d52e631ee[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Fri Feb 27 16:52:22 2015 +1000
+
+    T#1599 - biojs working now for Rohart Score and tooltip
+
+[33mcommit b66aceb640f0de759cef134c048b9fe1e93fdfe0[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Fri Feb 27 16:46:49 2015 +1000
+
+    T#1599 - biojs working now for Rohart Score and tooltip
+
+[33mcommit d636f38d26357946c912ddb0be3742640e42b8f6[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Fri Feb 27 16:37:52 2015 +1000
+
+    T#1599 - biojs working now for Rohart Score - wip on images for Stemformatics
+
+[33mcommit 9e77f432ece752a1457a8790f28d9799a22859d2[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Fri Feb 27 16:27:12 2015 +1000
+
+    T#1599 - working on improving biojs
+
+[33mcommit c8b9c31a015b887e971048e2278de49ea6ee6ebc[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Fri Feb 27 16:26:18 2015 +1000
+
+    T#1599 - working on improving biojs
+
+[33mcommit e0e609cb671093eb2d43c520287e78c48e6538d4[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Fri Feb 27 16:18:20 2015 +1000
+
+    T#1599 - working on improving biojs
+
+[33mcommit ee7ff1ba3414efcfadec1e21b31eb42d0b46516c[m
+Author: Rowland Mosbergen <rowland.mosbergen@gmail.com>
+Date:   Fri Feb 27 15:09:13 2015 +1000
+
+    Task #1599 - biojs package wip
