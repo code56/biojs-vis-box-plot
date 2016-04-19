@@ -1,11 +1,13 @@
-# biojs-vis-scatter-plot
+# biojs-vis-box-plot
 
 [![NPM version](http://img.shields.io/npm/v/biojs-vis-rohart-msc-test.svg)](https://www.npmjs.org/package/biojs-vis-scatter-plot) 
 
 > BioJS component to provide a scatter-plot graphing tool hosted in Stemformatics
 
+NOTE: CALCULATIONS ARE YET TO BE TESTED -> unit testing coming soon
+
 ## Getting Started
-Install the module with: `npm install biojs-vis-scatter-plot`
+Install the module with: `npm install biojs-vis-box-plot`
 
 for more details of the options, see the working example [here](http://biojs.io/d/biojs-vis-scatter-plot)  and the example code [here](https://github.com/ArianeMora/bio-js-scatter-plot/blob/master/examples/simple.js)
 
