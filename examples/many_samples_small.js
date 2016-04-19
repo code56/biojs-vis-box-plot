@@ -30,18 +30,14 @@ var tooltip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([0, +110])
     .html(function(d) {
-        probe = d.Probe;
-        // 2 decimal places on the display only
-        Expression_Value = round_to_two_decimal_places(d[y_column]);
-        lwr = round_to_two_decimal_places(d.Expression_Value - d.Standard_Deviation);
-        upr = round_to_two_decimal_places(d.Expression_Value + d.Standard_Deviation);
-        temp = 
+       temp = 
             "Probe: " + d.Probe + "<br/>" +
-            "Sample: " + d.Sample_ID +"<br/>"+
-            "Log2 Expression: " + Expression_Value + " [" + lwr + ";" + upr +"]<br/>"
-           // "MSC predicted "+msc_call+"/"+total+" iterations<br/>"
+            "Sample: " + d.Sample_Type +"<br/>"+
+            "Disease State: " + d.Disease_State + "<br/>"
+           console.log(temp);
         return temp; 
     });
+
 
 //The url's to the data displayed
 data_url= '../data/ds_id_5003_scatter_gata3.tsv';
@@ -66,11 +62,15 @@ d3.tsv(data_url,function (error,data){
     sample_types = new Array();
     sample_type_array = new Array();
     sample_type_count = 0;
+    disease_states = [];
+    disease_state_names = "";
     j = 0;
     //need to put in the number of colours that are being used (so that it
     //can reiitterate over them again if necesary
     number_of_colours = 39;
     colour_count = 0;
+    disease_states = [];
+    disease_state_names = "";
     data.forEach(function(d){
         // ths + on the front converts it into a number just in case
         d.Expression_Value = +d.Expression_Value;
@@ -120,7 +120,7 @@ d3.tsv(data_url,function (error,data){
     probes = probes;
     sample_types = sample_types;
     probe_count = probe_count;
-    title = "Scatter Plot";
+    title = "Box Plot";
     subtitle1 = "Subtitle"
     subtitle2 = "Subtitle"
     target = rootDiv;
@@ -133,9 +133,40 @@ d3.tsv(data_url,function (error,data){
         width = 1000;
     }
 
+   //Need a name of all disease states for the sample type
+    for (disease in disease_states) {
+        disease_state_names = disease_states[disease] + " " + disease_state_names;
+    }
+    // this tooltip function is passed into the graph via the tooltip
+    var all_disease_tooltip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([0, +110])
+    .html(function(d) {
+       temp = 
+            "Probe: " + d.Probe + "<br/>" +
+            "Sample: " + d.Sample_Type +"<br/>"+
+            "Disease State: " + disease_state_names + "<br/>"
+           console.log(temp);
+        return temp;
+    });
+
+
     //The main options for the graph
     var options = {
-
+	/******** Options for Data order *****************************************/
+	// If no orders are given than the order is taken from the dataset
+	
+	box_width: 10,
+	box_width_wiskers: 5,
+	disease_state_order: "none", //Order of the disease state on the x axis
+	sample_type_order: "none", //Order of the sample types on the x axis
+	probe_order: "none",	//Order of the probes on the x axis
+	//Including the disease state on the x axis causes the order to change as the data becomes
+	//sorted by probes and disease state
+	include_disease_state_x_axis: "no", //Includes the disease state on the x axis
+	size_of_disease_state_labels: 200, //The size allotted to the disease state labels
+	x_axis_padding: 50,
+    	all_disease_tooltip: all_disease_tooltip, // using d3-tips
         /******** Options for Sizing *****************************************/
         legend_padding: 50,
 	legend_rect_size: 20,

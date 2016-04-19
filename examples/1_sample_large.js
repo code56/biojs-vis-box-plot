@@ -1,4 +1,4 @@
-// if you don't specify a html file, the sniper will generate a div with id "rootDiv"
+ // if you don't specify a html file, the sniper will generate a div with id "rootDiv"
 var app = require("biojs-vis-scatter-plot");
 function round_to_two_decimal_places(num){
     new_num = Math.round(num * 100) / 100;
@@ -30,16 +30,11 @@ var tooltip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([0, +110])
     .html(function(d) {
-        probe = d.Probe;
-        // 2 decimal places on the display only
-        Expression_Value = round_to_two_decimal_places(d[y_column]);
-        lwr = round_to_two_decimal_places(d.Expression_Value - d.Standard_Deviation);
-        upr = round_to_two_decimal_places(d.Expression_Value + d.Standard_Deviation);
-        temp = 
+       temp = 
             "Probe: " + d.Probe + "<br/>" +
-            "Sample: " + d.Sample_ID +"<br/>"+
-            "Log2 Expression: " + Expression_Value + " [" + lwr + ";" + upr +"]<br/>"
-           // "MSC predicted "+msc_call+"/"+total+" iterations<br/>"
+            "Sample: " + d.Sample_Type +"<br/>"+
+            "Disease State: " + d.Disease_State + "<br/>"
+           console.log(temp);
         return temp; 
     });
 
@@ -71,6 +66,8 @@ d3.tsv(data_url,function (error,data){
     //can reiitterate over them again if necesary
     number_of_colours = 39;
     colour_count = 0;
+    disease_states = [];
+    disease_state_names = "";
     data.forEach(function(d){
         // ths + on the front converts it into a number just in case
         d.Expression_Value = +d.Expression_Value;
@@ -88,6 +85,9 @@ d3.tsv(data_url,function (error,data){
         if($.inArray(d.Probe, probes_types) == -1){
             probes_types.push(d.Probe);
             probe_count++;
+        }
+        if ($.inArray(d.Disease_State, disease_states) == -1) {
+                disease_states.push(d.Disease_State);
         }
         if($.inArray(d.Sample_Type, sample_type_array) == -1) {
             //Gives each sample type a unique id so that they can be grouped 
@@ -112,6 +112,11 @@ d3.tsv(data_url,function (error,data){
         probes[i][1] = colours[colour_count];
         colour_count++;
     }
+    //Need a name of all disease states for the sample type
+    for (disease in disease_states) {
+        disease_state_names = disease_states[disease] + " " + disease_state_names;
+    }
+    console.log(disease_state_names);
     // The number of increments is how large the increment size is for the
     // y axis (i.e. 1 per whole numner etc) e.g. or an increment per number = max - min
     number_of_increments = max - min;
@@ -132,6 +137,19 @@ d3.tsv(data_url,function (error,data){
     if (width < 1000){
         width = 1000;
     }
+    // this tooltip function is passed into the graph via the tooltip
+    var all_disease_tooltip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([0, +110])
+    .html(function(d) {
+       temp = 
+            "Probe: " + d.Probe + "<br/>" +
+            "Sample: " + d.Sample_Type +"<br/>"+
+            "Disease State: " + disease_state_names + "<br/>"
+           console.log(temp);
+        return temp;
+    });
+
 
     //The main options for the graph
     var options = {
@@ -141,7 +159,7 @@ d3.tsv(data_url,function (error,data){
         legend_rect_size: 20,
 	height: 400,
         width: 600,
-        margin:{top: 50, left: 60, bottom: 500, right: 100},
+        margin:{top: 50, left: 60, bottom: 500, right: 200},
         initial_padding: 10,
         x_axis_label_padding: 10,//padding for the x axis labels (how far below the graph)
         text_size: "12px",
@@ -156,12 +174,17 @@ d3.tsv(data_url,function (error,data){
         /*********** End of sizing options **********************************/
 	/******** Options for Data order *****************************************/
 	// If no orders are given than the order is taken from the dataset
+	box_width: 50,
+	box_width_wiskers: 5,
 	disease_state_order: "none", //Order of the disease state on the x axis
+	sample_type_order: "none", //Order of the sample types on the x axis
 	probe_order: "none",	//Order of the probes on the x axis
 	//Including the disease state on the x axis causes the order to change as the data becomes
 	//sorted by probes and disease state
 	include_disease_state_x_axis: "yes", //Includes the disease state on the x axis
-	size_of_disease_state_labels: 50, //The size allotted to the disease state labels
+	size_of_disease_state_labels: 200, //The size allotted to the disease state labels
+	x_axis_padding: 50,
+    all_disease_tooltip: all_disease_tooltip, // using d3-tips
 	/******** End Options for Data order *****************************************/
         background_colour: "white",
         background_stroke_colour:  "black",
