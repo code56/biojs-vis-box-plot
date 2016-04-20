@@ -1,4 +1,4 @@
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"biojs-vis-scatter-plot":[function(require,module,exports){
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"biojsboxplot":[function(require,module,exports){
 /*
     Copyright 2015 Ariane Mora
 
@@ -15,12 +15,12 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     limitations under the License.
 
 
-    This is a standalone unit to call when you want to create a scatter plot graph.
+    This is a standalone unit to call when you want to create a box plot graph.
 
 */
-var  biojsvisscatterplot;
+var biojsboxplot;
 
-module.exports = biojsvisscatterplot = function(init_options)
+module.exports = biojsboxplot = function(init_options)
 {
 
     /* this is just to define the options as defaults: added numberFormat*/
@@ -1262,7 +1262,7 @@ module.exports = biojsvisscatterplot = function(init_options)
         graph = this.preprocess_lines(graph);
         graph = this.setup_graph(graph);
         var target = $(options.target);
-        target.addClass('scatter_plot');
+        target.addClass('box_plot');
 
         svg = graph.svg;
     } 

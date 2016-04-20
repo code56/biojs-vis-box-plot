@@ -1,32 +1,32 @@
 {
-  "name": "biojs-vis-scatter-plot",
-  "description": "BioJS component to provide a scatter plot graph hosted in Stemformatics",
-  "version": "0.1.5",
-  "homepage": "https://github.com/ArianeMora/bio-js-scatter-plot",
+  "name": "biojs-vis-box-plot",
+  "description": "BioJS component to provide a box plot graph hosted in Stemformatics",
+  "version": "0.0.3",
+  "homepage": "https://github.com/ArianeMora/bio-js-box-plot",
   "author": {
     "name": "ArianeMora",
     "email": "ariane.mora@uq.net.au"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ArianeMora/bio-js-scatter-plot.git"
+    "url": "https://github.com/ArianeMora/bio-js-box-plot.git"
   },
   "bugs": {
-    "url": "https://github.com/ArianeMora/bio-js-scatter-plot/issues"
+    "url": "https://github.com/ArianeMora/bio-js-box-plot/issues"
   },
   "licenses": [
     {
       "type": "Apache 2",
-      "url": "https://github.com/ArianeMora/bio-js-scatter-plot/blob/master/LICENSE"
+      "url": "https://github.com/ArianeMora/bio-js-box-plot/blob/master/LICENSE"
     }
   ],
   "main": "lib/index.js",
   "scripts": {
 		"test": "echo 'Error: no test specified' && exit 1",
-		"build": "mkdirp build && browserify -r ./:biojs-vis-scatter-plot -o build/test.js",
+		"build": "mkdirp build && browserify -r ./:biojsboxplot -o build/test.js",
 		"build-browser": "npm run build",
 		"install": "npm run build",
-		"watch": "watchify -r ./:biojs-vis-scatter-plot -v -o build/test.js",
+		"watch": "watchify -r ./:biojsboxplot -v -o build/test.js",
 		"w": "prunner \"npm run sniper\" \"npm run watch\"",
 		"sniper": "sniper ."
   },
@@ -45,7 +45,7 @@
         "https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.3/d3-tip.min.js",
         "https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"
     ],
-    "css":["/css/biojs-vis-scatter-plot.css"],
+    "css":["/css/biojs-vis-box-plot.css"],
     "snippets": ["examples"],
     "first": "many_samples_large",
     "second": "many_samples_small",
@@ -55,5 +55,5 @@
     "sixth": "three_samples_small"
 
    }, 
-  "keywords": ["d3","graph","stemformatics","biojs","Scatter","Plot"]
+  "keywords": ["d3","graph","stemformatics","biojs","box","Plot"]
 }
