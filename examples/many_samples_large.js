@@ -57,7 +57,7 @@ d3.tsv(data_url,function (error,data){
     probes = new Array();
     probe_count = 0;
     //Saving the sample types and corrosponding id to use when 
-    //itterating over for the hovering over the ample types and altering the scatter
+    //itterating over for the hovering over the ample types and altering the box
     //points for that sample type
     sample_types = new Array();
     sample_type_array = new Array();
@@ -180,7 +180,7 @@ d3.tsv(data_url,function (error,data){
         // be displayed multiply by 0
         display: {hoverbars: "yes", error_bars: "yes", legend: "yes", horizontal_lines: "yes", vertical_lines: "yes", x_axis_labels: "yes", y_axis_title: "yes", horizontal_grid_lines: "yes"},
 
-        circle_radius: 2,  // for the scatter points
+        circle_radius: 2,  // for the box points
         hover_circle_radius: 10,
         /*********** End of sizing options **********************************/
 	/******** Options for Data order *****************************************/
