@@ -561,7 +561,8 @@ module.exports = biojsboxplot = function(init_options)
                     }
                     //Now have all the expression values for a specific sample type so we create box
                     //plot and calculate the values
-                    box_plot_vals = this.calculate_box_plot_vals(expression_values);
+box_plot_vals = this.calculate_box_plot_vals_bar(expression_values);
+                   // box_plot_vals = this.calculate_box_plot_vals(expression_values);
                     // Actually draw the box plot on the graph
                     graph = this.draw_box_plot(graph, box_plot_vals, parseInt(probe), 0, parseInt(sample_types), number_sample_types, probe_name, sample_type, disease_state_names);
                 }   
@@ -595,7 +596,8 @@ module.exports = biojsboxplot = function(init_options)
         x_buffer = (probe_size * probe) + (disease_state_size * disease_state) + (sample_type_size * (sample_type)) + (sample_type_size * 3 / 8);
         console.log(probe, disease_state, sample_type, number_sample_types, disease_state_size); 
         //Add vertical lline
-        svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[4], svg, scaleY, colour_wiskers);
+   //     svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[4], svg, scaleY, colour_wiskers);
+        svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[2], svg, scaleY, colour_wiskers);
         //Add box
         svg.append("rect")
             .data(options.data)
@@ -614,14 +616,29 @@ module.exports = biojsboxplot = function(init_options)
             .on("mouseover", tooltip.show) 
             .on("mouseout", tooltip.hide);
                 //Add min line
-        svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers);
+ svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers);
         //Add median line
-        svg = this.add_line_to_box(options.stroke_width, x_buffer + box_width*.25, box_width*0.5, box_plot_vals[2], svg, scaleY, colour_median, 0);
+    //    svg = this.add_line_to_box(options.stroke_width, x_buffer + box_width*.25, box_width*0.5, box_plot_vals[1], svg, scaleY, colour_median, 0);
         //Add max line
-        svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[4], svg, scaleY, colour_wiskers, box_width_wiskers);
+        svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[2], svg, scaleY, colour_wiskers, box_width_wiskers);
+       // svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers);
+        //Add median line
+      //  svg = this.add_line_to_box(options.stroke_width, x_buffer + box_width*.25, box_width*0.5, box_plot_vals[2], svg, scaleY, colour_median, 0);
+        //Add max line
+      //  svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[4], svg, scaleY, colour_wiskers, box_width_wiskers);
         graph.svg = svg;
         return graph;
     }
+
+	this.get_mean_value = function(values) {
+		sum = 0;
+        for (i in values) {
+            sum += values[i];
+        }
+        mean = sum / values.length;
+        return mean;
+	}
+
     
     this.add_line_to_box = function(stroke_width, x_buffer, box_width, y_value, svg, scaleY, colour, box_width_wiskers) {
         svg.append("line")
@@ -646,7 +663,15 @@ module.exports = biojsboxplot = function(init_options)
             .attr("stroke", colour_wiskers);
         return svg;
 }
-
+    /* Takes the array of samples for a specific sample type
+     * already ordered */
+    this.calculate_box_plot_vals_bar = function(values) {
+        min_max_vals = this.return_min_max_vals(values);
+        var mean = this.get_mean_value(values);
+        min = min_max_vals[0];
+        max = min_max_vals[1];
+        return [min, mean, max];
+    }
 
     /* Takes the array of samples for a specific sample type
      * already ordered */
