@@ -153,7 +153,7 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
-
+	bar_graph: "no",
         /******** Options for Sizing *****************************************/
         legend_padding: 50,
         legend_rect_size: 20,

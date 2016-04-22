@@ -41,8 +41,8 @@ var tooltip = d3.tip()
 
 //The url's to the data displayed
 //data_url= '../data/ds_id_5003_scatter_gata3.tsv';
-//data_url = '../data/ds_id_2000_scatter_stat1.tsv';
-data_url = '../data/ds_id_2000_scatter_pdgfd.tsv';
+data_url = '../data/ds_id_2000_scatter_stat1.tsv';
+//data_url = '../data/ds_id_2000_scatter_pdgfd.tsv';
 
 /* Extracting the data from the csv files for use in the graph
  * Also sets relevent options based on the data passed in (for example
@@ -63,12 +63,12 @@ d3.tsv(data_url,function (error,data){
     sample_type_array = new Array();
     sample_type_count = 0;
     j = 0;
-    disease_states = [];
-    disease_state_names = "";
     //need to put in the number of colours that are being used (so that it
     //can reiitterate over them again if necesary
     number_of_colours = 39;
     colour_count = 0;
+    disease_states = [];
+    disease_state_names = "";
     data.forEach(function(d){
         // ths + on the front converts it into a number just in case
         d.Expression_Value = +d.Expression_Value;
@@ -118,7 +118,7 @@ d3.tsv(data_url,function (error,data){
     probes = probes;
     sample_types = sample_types;
     probe_count = probe_count;
-    title = "Box Plot";
+    title = "Bar Graph";
     subtitle1 = "Subtitle"
     subtitle2 = "Subtitle"
     target = rootDiv;
@@ -130,7 +130,8 @@ d3.tsv(data_url,function (error,data){
     if (width < 1000){
         width = 1000;
     }
-    //Need a name of all disease states for the sample type
+
+     //Need a name of all disease states for the sample type
     for (disease in disease_states) {
         disease_state_names = disease_states[disease] + " " + disease_state_names;
     }
@@ -150,9 +151,11 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
-	bar_graph: "no",
 	/******** Options for Data order *****************************************/
 	// If no orders are given than the order is taken from the dataset
+	bar_graph: "yes",	
+	box_width: 10,
+	box_width_wiskers: 3,
 	disease_state_order: "none", //Order of the disease state on the x axis
 	sample_type_order: "none", //Order of the sample types on the x axis
 	probe_order: "none",	//Order of the probes on the x axis
@@ -162,8 +165,6 @@ d3.tsv(data_url,function (error,data){
 	size_of_disease_state_labels: 200, //The size allotted to the disease state labels
 	x_axis_padding: 50,
     	all_disease_tooltip: all_disease_tooltip, // using d3-tips
-	box_width: 10,
-	box_width_wiskers: 5,
 	/******** End Options for Data order *****************************************/    
         /******** Options for Sizing *****************************************/
         legend_padding: 50,
@@ -178,11 +179,11 @@ d3.tsv(data_url,function (error,data){
         increment: number_of_increments * 0.5, // To double the number of increments ( mutliply by 2, same for 
         // reducing. Number of increments is how many numbers are displayed on the y axis. For none to
         // be displayed multiply by 0
-        display: {hoverbars: "yes", error_bars: "yes", legend: "no", horizontal_lines: "yes", vertical_lines: "yes", x_axis_labels: "yes", y_axis_title: "yes", horizontal_grid_lines: "no"},
+        display: {hoverbars: "yes", error_bars: "yes", legend: "yes", horizontal_lines: "yes", vertical_lines: "yes", x_axis_labels: "yes", y_axis_title: "yes", horizontal_grid_lines: "yes"},
 
         circle_radius: 2,  // for the scatter points
-        hover_circle_radius: 5,
-    
+        hover_circle_radius: 10,
+        /*********** End of sizing options **********************************/
 
         background_colour: "white",
         background_stroke_colour:  "black",
@@ -197,7 +198,7 @@ d3.tsv(data_url,function (error,data){
         // eq. yes for x_axis labels indicates the user wants labels on the x axis (sample types)
         // indicate yes or no to each of the display options below to choose which are displayed on the graph
         domain_colours : ["#FFFFFF","#7f3f98"],
-        error_bar_width:3,
+        error_bar_width:5,
 	error_stroke_width: "1px",
         error_dividor:100,//100 means error bars will not show when error < 1% value 
         //horizontal lines takes a name, colour and the yvalue. If no colour is given one is chosen at random

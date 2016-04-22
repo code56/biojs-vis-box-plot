@@ -45,6 +45,7 @@
         "https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.3/d3-tip.min.js",
         "https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"
     ],
+    "css":["/css/biojs-vis-box-plot.css"],
     "snippets": ["examples"],
     "first": "many_samples_large",
     "second": "many_samples_small",
