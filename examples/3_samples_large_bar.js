@@ -41,7 +41,8 @@ var tooltip = d3.tip()
 
 //The url's to the data displayed
 //data_url= '../data/ds_id_5003_scatter_gata3.tsv';
-data_url = '../data/ds_id_2000_scatter_stat1.tsv';
+data_url = '../test_many.csv';//data/ds_id_2000_scatter_stat1.tsv';
+//data_url = '../data/ds_id_2000_scatter_stat1.tsv';
 //data_url = '../data/ds_id_2000_scatter_pdgfd.tsv';
 
 /* Extracting the data from the csv files for use in the graph
@@ -150,6 +151,8 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
+        test: "yes", //Only used to test the data -> outputs the values to a file on the computer
+        test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
 	/******** Options for Data order *****************************************/
 	// If no orders are given than the order is taken from the dataset
 	bar_graph: "yes",	
