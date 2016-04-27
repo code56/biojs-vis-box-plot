@@ -1,5 +1,5 @@
 // if you don't specify a html file, the sniper will generate a div with id "rootDiv"
-var app = require("biojsboxplot");
+var app = require("biojs-vis-box-plot");
 function round_to_two_decimal_places(num){
     new_num = Math.round(num * 100) / 100;
     return new_num;
@@ -150,6 +150,8 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
+        test: "yes", //Only used to test the data -> outputs the values to a file on the computer
+        test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
 	/******** Options for Data order *****************************************/
 	// If no orders are given than the order is taken from the dataset
 	bar_graph: "yes",	

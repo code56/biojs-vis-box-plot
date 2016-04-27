@@ -118,7 +118,7 @@ d3.tsv(data_url,function (error,data){
     probes = probes;
     sample_types = sample_types;
     probe_count = probe_count;
-    title = "Box Plot";
+    title = "Bar Graph";
     subtitle1 = "Subtitle"
     subtitle2 = "Subtitle"
     target = rootDiv;
@@ -150,6 +150,8 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
+        test: "yes", //Only used to test the data -> outputs the values to a file on the computer
+        test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
 	bar_graph: "yes",
 	/******** Options for Data order *****************************************/
 	// If no orders are given than the order is taken from the dataset

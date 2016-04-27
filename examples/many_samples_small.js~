@@ -155,7 +155,7 @@ d3.tsv(data_url,function (error,data){
     var options = {
 	/******** Options for Data order *****************************************/
 	// If no orders are given than the order is taken from the dataset
-	
+	bar_graph: "no",
 	box_width: 10,
 	box_width_wiskers: 5,
 	disease_state_order: "none", //Order of the disease state on the x axis
