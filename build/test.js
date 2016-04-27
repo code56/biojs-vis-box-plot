@@ -18,9 +18,9 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     This is a standalone unit to call when you want to create a box plot graph.
 
 */
-var biojsboxplot;
+var biojsvisboxplot;
 
-module.exports = biojsboxplot = function(init_options)
+module.exports = biojsvisboxplot = function(init_options)
 {
 
     /* this is just to define the options as defaults: added numberFormat*/
@@ -532,8 +532,11 @@ module.exports = biojsboxplot = function(init_options)
                         }
                         //Now have all the expression values for a specific sample type so we create box
                         //plot and calculate the values
-                        box_plot_vals = this.calculate_box_plot_vals(expression_values);
-                        // Actually draw the box plot on the graph
+                        if (options.bar_graph == "yes") {
+                            box_plot_vals = this.calculate_box_plot_vals_bar(expression_values);
+                        } else {
+                            box_plot_vals = this.calculate_box_plot_vals(expression_values);
+                        }// Actually draw the box plot on the graph
                         graph = this.draw_box_plot(graph, box_plot_vals, parseInt(probe), parseInt(disease_states), parseInt(sample_types), number_sample_types, probe_name, sample_type, disease_state);
                     }
                 }   
@@ -561,7 +564,11 @@ module.exports = biojsboxplot = function(init_options)
                     }
                     //Now have all the expression values for a specific sample type so we create box
                     //plot and calculate the values
-                    box_plot_vals = this.calculate_box_plot_vals(expression_values);
+                    if (options.bar_graph == "yes") {
+                        box_plot_vals = this.calculate_box_plot_vals_bar(expression_values);
+                    } else {
+                        box_plot_vals = this.calculate_box_plot_vals(expression_values);
+                    }
                     // Actually draw the box plot on the graph
                     graph = this.draw_box_plot(graph, box_plot_vals, parseInt(probe), 0, parseInt(sample_types), number_sample_types, probe_name, sample_type, disease_state_names);
                 }   
@@ -583,7 +590,7 @@ module.exports = biojsboxplot = function(init_options)
         }
         svg.call(tooltip);
         box_width = options.box_width;
-        box_width_wiskers = (box_width - options.box_width_wiskers)/2; //assumes box width > box_width wiskers
+        box_width_wiskers =(box_width - options.box_width_wiskers)/2; //assumes box width > box_width wiskers
         colour_wiskers = options.colour[sample_type];
         colour_median = "white";
         id = probe_name + "-" + sample_type_name + "-" + disease_state_name;
@@ -592,10 +599,16 @@ module.exports = biojsboxplot = function(init_options)
         probe_size = graph.size_of_probe_collumn;
         disease_state_size = graph.size_of_disease_state_collumn;
         sample_type_size = disease_state_size/number_sample_types;
-        x_buffer = (probe_size * probe) + (disease_state_size * disease_state) + (sample_type_size * (sample_type)) + (sample_type_size * 3 / 8);
-        console.log(probe, disease_state, sample_type, number_sample_types, disease_state_size); 
+        x_buffer = (probe_size * probe) + (disease_state_size * disease_state) + (sample_type_size * (sample_type)) + (sample_type_size * 3 / 8); 
         //Add vertical lline
-        svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[4], svg, scaleY, colour_wiskers);
+        if (options.bar_graph == "yes") {
+            opacity = 0.2;
+            svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[2], svg, scaleY, colour_wiskers);
+        }
+        else {
+            opacity = 1;
+            svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[4], svg, scaleY, colour_wiskers);
+        }
         //Add box
         svg.append("rect")
             .data(options.data)
@@ -603,25 +616,76 @@ module.exports = biojsboxplot = function(init_options)
             .attr('x', x_buffer)
             .attr('id', id)
             .attr('y', function(d) {
-                   return scaleY(box_plot_vals[3]);
+                    if (options.bar_graph == "yes") {
+                        temp = scaleY(box_plot_vals[1]);
+                    } else {
+                        temp = scaleY(box_plot_vals[3]);
+                    } 
+                    return temp;
             })
             .attr('height', function(d) {
-                temp = scaleY(box_plot_vals[1]) - scaleY(box_plot_vals[3]);
+                    if (options.bar_graph == "yes") {
+                        temp = scaleY(0) - scaleY(box_plot_vals[1]);
+                    } else {
+                        temp = scaleY(box_plot_vals[1]) - scaleY(box_plot_vals[3]);
+                    }
                 return temp;
                 })
-            .attr("stroke-width", 0)
             .attr("fill", colour_box)
+            .attr("opacity", opacity)
             .on("mouseover", tooltip.show) 
             .on("mouseout", tooltip.hide);
-                //Add min line
-        svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers);
-        //Add median line
-        svg = this.add_line_to_box(options.stroke_width, x_buffer + box_width*.25, box_width*0.5, box_plot_vals[2], svg, scaleY, colour_median, 0);
-        //Add max line
-        svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[4], svg, scaleY, colour_wiskers, box_width_wiskers);
+            //Add min line
+            if (options.bar_graph == "yes") {
+                svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers);
+                svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[2], svg, scaleY, colour_wiskers, box_width_wiskers);
+                svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[1], svg, scaleY, colour_wiskers, box_width_wiskers);
+
+                svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer, 0, box_plot_vals[1], svg, scaleY, colour_wiskers);
+                svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width, 0, box_plot_vals[1], svg, scaleY, colour_wiskers);
+            } else {
+               //Add max line
+                svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers);
+                //Add median line
+                svg = this.add_line_to_box(options.stroke_width, x_buffer + box_width*.25, box_width*0.5, box_plot_vals[2], svg, scaleY, colour_median, 0);
+                //Add max line
+                svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[4], svg, scaleY, colour_wiskers, box_width_wiskers);
+            }
+        //Option to allow the user to test their values
+        if (options.test == "yes") {
+            this.test_values(disease_state_name + " " + probe_name + "|" + sample_type_name, box_plot_vals, graph, options);
+        }
         graph.svg = svg;
         return graph;
     }
+
+    /* A small function to test the values from the computed values
+     * Checks values from graphs downloaded from stemformatics */
+    this.test_values = function(name, box_plot_vals, graph, options) {
+        //var fs = require('fs');
+        //name in format as saved by stemformatics: name, average. standard deviation, min, max, median, Q1, Q3
+        row = name + "," + 0 + "," + 0 + "," + box_plot_vals[0] + "," + box_plot_vals[4] + "," + box_plot_vals[2] + "," + box_plot_vals[1] + "," + box_plot_vals[3];
+        if (options.bar_graph == "yes") {
+            row = name + "," + box_plot_vals[1] + "," + 0 + "," + box_plot_vals[0] + "," + box_plot_vals[2] + "," + 0 + "," + 0 + "," + 0;
+        }
+        console.log(row);
+        /*fs.writeFile(options.test_path, row, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+            console.log("The file was saved!");
+        }); */
+    } 
+
+	this.get_mean_value = function(values) {
+		sum = 0;
+        for (i in values) {
+            sum += values[i];
+        }
+        mean = sum / values.length;
+        return mean;
+	}
+
     
     this.add_line_to_box = function(stroke_width, x_buffer, box_width, y_value, svg, scaleY, colour, box_width_wiskers) {
         svg.append("line")
@@ -646,7 +710,15 @@ module.exports = biojsboxplot = function(init_options)
             .attr("stroke", colour_wiskers);
         return svg;
 }
-
+    /* Takes the array of samples for a specific sample type
+     * already ordered */
+    this.calculate_box_plot_vals_bar = function(values) {
+        min_max_vals = this.return_min_max_vals(values);
+        var mean = this.get_mean_value(values);
+        min = min_max_vals[0];
+        max = min_max_vals[1];
+        return [min, mean, max];
+    }
 
     /* Takes the array of samples for a specific sample type
      * already ordered */

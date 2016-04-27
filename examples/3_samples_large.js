@@ -1,5 +1,5 @@
 // if you don't specify a html file, the sniper will generate a div with id "rootDiv"
-var app = require("biojsboxplot");
+var app = require("biojs-vis-box-plot");
 function round_to_two_decimal_places(num){
     new_num = Math.round(num * 100) / 100;
     return new_num;
@@ -41,7 +41,7 @@ var tooltip = d3.tip()
 
 //The url's to the data displayed
 //data_url= '../data/ds_id_5003_scatter_gata3.tsv';
-data_url = '../data/ds_id_2000_scatter_stat1.tsv';
+data_url = '../test_many.csv';//data/ds_id_2000_scatter_stat1.tsv';
 //data_url = '../data/ds_id_2000_scatter_pdgfd.tsv';
 
 /* Extracting the data from the csv files for use in the graph
@@ -150,24 +150,28 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
-	/******** Options for Data order *****************************************/
-	// If no orders are given than the order is taken from the dataset
-	box_width: 20,
-	box_width_wiskers: 5,
-	disease_state_order: "none", //Order of the disease state on the x axis
-	sample_type_order: "none", //Order of the sample types on the x axis
-	probe_order: "none",	//Order of the probes on the x axis
-	//Including the disease state on the x axis causes the order to change as the data becomes
-	//sorted by probes and disease state
-	include_disease_state_x_axis: "yes", //Includes the disease state on the x axis
-	size_of_disease_state_labels: 200, //The size allotted to the disease state labels
-	x_axis_padding: 50,
+        test: "yes", //Only used to test the data -> outputs the values to a file on the computer
+        test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
+        // save as .csv file 
+        /********   Options for Data order *****************************************/
+        // If no orders are given than the order is taken from the dataset
+        bar_graph: "no",	
+        box_width: 20,
+        box_width_wiskers: 5,
+        disease_state_order: "none", //Order of the disease state on the x axis
+        sample_type_order: "none", //Order of the sample types on the x axis
+        probe_order: "none",	//Order of the probes on the x axis
+        //Including the disease state on the x axis causes the order to change as the data becomes
+        //sorted by probes and disease state
+        include_disease_state_x_axis: "yes", //Includes the disease state on the x axis
+        size_of_disease_state_labels: 200, //The size allotted to the disease state labels
+        x_axis_padding: 50,
     	all_disease_tooltip: all_disease_tooltip, // using d3-tips
 	/******** End Options for Data order *****************************************/    
         /******** Options for Sizing *****************************************/
         legend_padding: 50,
         legend_rect_size: 20,	
-	height: 400,
+    	height: 400,
         width: 600,
         margin:{top: 50, left: 60, bottom: 500, right: 150},
         initial_padding: 10,
@@ -186,11 +190,11 @@ d3.tsv(data_url,function (error,data){
         background_stroke_colour:  "black",
         background_stroke_width:  "1px",
         colour: colours,
-	font_style: "Arial",
-	grid_colour: "black",
-	grid_opacity: 0.5,
-	y_label_text_size: "14px",
-	y_label_x_val: 40,
+        font_style: "Arial",
+        grid_colour: "black",
+        grid_opacity: 0.5,
+        y_label_text_size: "14px",
+        y_label_x_val: 40,
         data: data,
         // eq. yes for x_axis labels indicates the user wants labels on the x axis (sample types)
         // indicate yes or no to each of the display options below to choose which are displayed on the graph

@@ -118,7 +118,7 @@ d3.tsv(data_url,function (error,data){
     probes = probes;
     sample_types = sample_types;
     probe_count = probe_count;
-    title = "Box Plot";
+    title = "Bar Graph";
     subtitle1 = "Subtitle"
     subtitle2 = "Subtitle"
     target = rootDiv;
@@ -150,7 +150,9 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
-	bar_graph: "no",
+        test: "yes", //Only used to test the data -> outputs the values to a file on the computer
+        test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
+	bar_graph: "yes",
 	/******** Options for Data order *****************************************/
 	// If no orders are given than the order is taken from the dataset
 	disease_state_order: "none", //Order of the disease state on the x axis
@@ -163,7 +165,7 @@ d3.tsv(data_url,function (error,data){
 	x_axis_padding: 50,
     	all_disease_tooltip: all_disease_tooltip, // using d3-tips
 	box_width: 10,
-	box_width_wiskers: 5,
+	box_width_wiskers: 3,
 	/******** End Options for Data order *****************************************/    
         /******** Options for Sizing *****************************************/
         legend_padding: 50,
