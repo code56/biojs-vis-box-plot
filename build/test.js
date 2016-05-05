@@ -500,7 +500,7 @@ module.exports = biojsvisboxplot = function(init_options)
     }
 
  /*------------------------------Box plot Calculations--------------------------------------*/
-
+    /* Sets up the box plot */
     this.setup_box_plot = function(graph) {
         options = graph.options;
         nested_values = graph.nested_values;
@@ -517,7 +517,7 @@ module.exports = biojsvisboxplot = function(init_options)
                     disease_values = row.values;
                     disease_state = row.key;
                     number_sample_types = disease_values.length;
-                    //These are the expression values for a specific sample grouped by the probe
+                    // These are the expression values for a specific sample grouped by the probe
                     // then the disease type so now we need to append all the expression values for this
                     // group then calculate the box plot and draw the values
                     for (sample_types in disease_values) {
@@ -820,8 +820,8 @@ module.exports = biojsvisboxplot = function(init_options)
         //Below are used for calculating the positioning of the labels
         size_of_probe_collumn = graph.size_of_probe_collumn;
         padding = 2 * page_options.width_to_support_many_samples;
-        if (vertical_lines.length == 1) {
-            size_of_probe_collumn = 0.66*size_of_probe_collumn;
+        if (vertical_lines.length == 1 && options.include_disease_state_x_axis == "yes") {
+            size_of_probe_collumn = 0.75 * size_of_probe_collumn;
         }
 	    svg.selectAll(".probe_text")
             .data(vertical_lines).enter()
