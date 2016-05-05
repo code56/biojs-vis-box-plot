@@ -1,7 +1,7 @@
 {
   "name": "biojs-vis-box-plot",
-  "description": "BioJS component to provide a box plot graph hosted in Stemformatics",
-  "version": "0.0.7",
+  "description": "BioJS component to provide a box plot graph or bar graph hosted in Stemformatics",
+  "version": "0.0.8",
   "homepage": "https://github.com/ArianeMora/biojs-vis-box-plot",
   "author": {
     "name": "ArianeMora",
@@ -48,12 +48,12 @@
     "css":["/css/biojs-vis-box-plot.css"],
     "snippets": ["examples"],
     "first": "many_samples_large",
-    "second": "many_samples_small",
+    "second": "many_samples_large_bar",
     "third": "one_sample_large",
     "fourth": "one_sample_small",
     "fith": "three_samples_large",
     "sixth": "three_samples_small"
 
    }, 
-  "keywords": ["d3","graph","stemformatics","biojs","box","Plot"]
+  "keywords": ["d3","graph","stemformatics","biojs","box","Plot", "bar", "graph"]
 }
