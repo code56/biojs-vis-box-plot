@@ -1,5 +1,5 @@
 // if you don't specify a html file, the sniper will generate a div with id "rootDiv"
-var app = require("biojsboxplot");
+var app = require("biojs-vis-box-plot");
 function round_to_two_decimal_places(num){
     new_num = Math.round(num * 100) / 100;
     return new_num;

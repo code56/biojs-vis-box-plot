@@ -1,5 +1,5 @@
 // if you don't specify a html file, the sniper will generate a div with id "rootDiv"
-var app = require("biojsboxplot");
+var app = require("biojs-vis-box-plot");
 function round_to_two_decimal_places(num){
     new_num = Math.round(num * 100) / 100;
     return new_num;
@@ -220,10 +220,12 @@ d3.tsv(data_url,function (error,data){
         //sample type order indicates whether or not the samplese need to be represented in a specific order
         //if no order is given then the order from the data set is taken
         sample_type_order:"none",// "DermalFibroblast, hONS", // "BM MSC,BM erythropoietic cells CD235A+,BM granulopoietic cells CD11B+,BM hematopoietic cells CD45+,Developing cortex neural progenitor cells,Ventral midbrain neural progenitor cells,Olfactory lamina propria derived stem cells",
-        sample_types: sample_types,
+        sample_types: sample_types,'
+	sample_type_count: sample_type_count,
         // Can fit 4 subtitles currently
         subtitles: [subtitle1],
         stroke_width:"3px",
+	stroke_width_num: 3,
         target: target,
         title: title,
         title_class: "title",

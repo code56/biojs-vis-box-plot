@@ -222,9 +222,11 @@ d3.tsv(data_url,function (error,data){
         //if no order is given then the order from the data set is taken
         sample_type_order:"none",// "DermalFibroblast, hONS", // "BM MSC,BM erythropoietic cells CD235A+,BM granulopoietic cells CD11B+,BM hematopoietic cells CD45+,Developing cortex neural progenitor cells,Ventral midbrain neural progenitor cells,Olfactory lamina propria derived stem cells",
         sample_types: sample_types,
+        num_sample_types: sample_type_count,
         // Can fit 4 subtitles currently
         subtitles: [subtitle1],
         stroke_width:"3px",
+	stroke_width_num: 3,
         target: target,
         title: title,
         title_class: "title",

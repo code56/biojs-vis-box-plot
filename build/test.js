@@ -539,7 +539,7 @@ module.exports = biojsvisboxplot = function(init_options)
                         } else {
                             box_plot_vals = this.calculate_box_plot_vals(expression_values);
                         }// Actually draw the box plot on the graph
-                        graph = this.draw_box_plot(graph, box_plot_vals, parseInt(probe), parseInt(disease_states), parseInt(sample_types), number_sample_types, probe_name, sample_type, disease_state);
+                        graph = this.draw_box_plot(expression_values, graph, box_plot_vals, parseInt(probe), parseInt(disease_states), parseInt(sample_types), number_sample_types, probe_name, sample_type, disease_state);
                     }
                 }   
             } else {
@@ -572,7 +572,7 @@ module.exports = biojsvisboxplot = function(init_options)
                         box_plot_vals = this.calculate_box_plot_vals(expression_values);
                     }
                     // Actually draw the box plot on the graph
-                    graph = this.draw_box_plot(graph, box_plot_vals, parseInt(probe), 0, parseInt(sample_types), number_sample_types, probe_name, sample_type, disease_state_names);
+                    graph = this.draw_box_plot(expression_values, graph, box_plot_vals, parseInt(probe), 0, parseInt(sample_types), number_sample_types, probe_name, sample_type, disease_state_names);
                 }   
             }
         }
@@ -580,7 +580,38 @@ module.exports = biojsvisboxplot = function(init_options)
         return graph;
     }
 
-    this.draw_box_plot = function(graph, box_plot_vals, probe, disease_state, sample_type, number_sample_types, probe_name, sample_type_name, disease_state_name) {
+    this.add_scatter_to_box = function(graph, scatter_values, median_line, sample_type, colour, colour_stroke) {
+        options = graph.options;
+        radius = options.radius;
+        svg = graph.svg;
+        svg.selectAll(".dot") // class of .dot
+            .data(scatter_values) // use the options.data and connect it to the elements that have .dot css
+            .enter() // this will create any new data points for anything that is missing.
+            .append("circle") // append an object circle
+            .attr("class", function(d) {
+                    //adds the sample type as the class so that when the sample type is overered over 
+                    //on the x label, the dots become highlighted 
+                    return "sample-type-" + sample_type})
+            .attr("r", radius) //radius 3.5
+            .attr("cx", median_line)
+            .attr("cy", function(d) { 
+                // set the y position as based off y_column
+                // ensure that you put these on separate lines to make it easier to troubleshoot
+                var cy =  scaleY(d);
+                return cy;
+            })
+            .style("stroke", colour_stroke)
+            .style("stroke-width","1px")
+            .style("fill", colour)
+            .attr("opacity", 0.8);
+           // .on('mouseover', tooltip.show)
+           // .on('mouseout', tooltip.hide);
+
+            return svg; 
+    }
+
+    /* Draw box plot draws the box and wiskers onto the graph and also if it is a bar graph this is drawn on too */
+    this.draw_box_plot = function(samples, graph, box_plot_vals, probe, disease_state, sample_type, number_sample_types, probe_name, sample_type_name, disease_state_name) {
         svg = graph.svg;
         scaleY = graph.scaleY;
         scaleX = graph.scaleX;
@@ -598,17 +629,22 @@ module.exports = biojsvisboxplot = function(init_options)
         id = probe_name + "-" + sample_type_name + "-" + disease_state_name;
         colour_box = options.colour[sample_type]; 
         stroke_width = options.stroke_width;
+        stroke_width_num = options.stroke_width_num;
         probe_size = graph.size_of_probe_collumn;
         disease_state_size = graph.size_of_disease_state_collumn;
         sample_type_size = disease_state_size/number_sample_types;
-        x_buffer = (0.75 * graph.page_options.width_to_support_many_samples) +  (2 * graph.page_options.width_to_support_many_samples * (probe)) + (probe_size * probe) + (disease_state_size * disease_state) + (sample_type_size * (sample_type)) + (sample_type_size * 3 / 8); 
+        x_buffer = (0.75 * graph.page_options.width_to_support_many_samples) +  (2 * graph.page_options.width_to_support_many_samples * (probe)) + (probe_size * probe) + (disease_state_size * disease_state); 
         //Add vertical lline
-        if (options.bar_graph == "yes") {
-            opacity = 0.2;
-            svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[2], svg, scaleY, colour_wiskers);
+        if (options.probe_count == 1) {
+            x_buffer = probe_size/2 - (number_sample_types * box_width);
         }
-        else {
+        if (options.bar_graph == "yes") {
+            opacity = 0.4;
+            x_buffer += ((1 + sample_type) * box_width) + (sample_type * stroke_width_num);
+            svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[2], svg, scaleY, colour_wiskers);
+        } else {
             opacity = 1;
+            x_buffer += (sample_type_size * (sample_type)) + (sample_type_size * 3 / 8);
             svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[4], svg, scaleY, colour_wiskers);
         }
         //Add box
@@ -659,6 +695,9 @@ module.exports = biojsvisboxplot = function(init_options)
         //Option to allow the user to test their values
         if (options.test == "yes") {
             this.test_values(disease_state_name + " " + probe_name + "|" + sample_type_name, box_plot_vals, graph, options);
+        }
+        if (options.draw_scatter_on_box == "yes") {
+            svg = this.add_scatter_to_box(graph, samples, x_buffer + box_width/2, sample_type, "white", colour_box);
         }
         graph.svg = svg;
         return graph;
@@ -720,9 +759,15 @@ module.exports = biojsvisboxplot = function(init_options)
     this.calculate_box_plot_vals_bar = function(values) {
         min_max_vals = this.return_min_max_vals(values);
         var mean = this.get_mean_value(values);
+        sum = 0;
+        numbers_meaned = [];
+        for (x in values) {
+            numbers_meaned.push(Math.abs(values[x] - mean));
+        }
+        standard_deviation = this.get_mean_value(numbers_meaned);
         min = min_max_vals[0];
         max = min_max_vals[1];
-        return [min, mean, max];
+        return [mean - standard_deviation, mean, mean + standard_deviation];
     }
 
     /* Takes the array of samples for a specific sample type

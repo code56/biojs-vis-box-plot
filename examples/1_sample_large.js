@@ -220,9 +220,11 @@ d3.tsv(data_url,function (error,data){
         probe_count: probe_count,
         probes: probes,
         sample_types: sample_types,
+        num_sample_types: sample_type_count,
         // Can fit 4 subtitles currently
         subtitles: [subtitle1],
         stroke_width:"3px",
+	stroke_width_num: 3,
         target: target,
         title: title,
         title_class: "title",

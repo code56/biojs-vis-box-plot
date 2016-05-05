@@ -236,6 +236,8 @@ d3.tsv(data_url,function (error,data){
         // Can fit 4 subtitles currently
         subtitles: [subtitle1],
         stroke_width:"3px",
+	stroke_width_num: 3,
+	sample_type_count: sample_type_count,
         target: target,
         title: title,
         title_class: "title",

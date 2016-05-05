@@ -1,5 +1,5 @@
  // if you don't specify a html file, the sniper will generate a div with id "rootDiv"
-var app = require("biojsboxplot");
+var app = require("biojs-vis-box-plot");
 function round_to_two_decimal_places(num){
     new_num = Math.round(num * 100) / 100;
     return new_num;
@@ -223,6 +223,7 @@ d3.tsv(data_url,function (error,data){
         // Can fit 4 subtitles currently
         subtitles: [subtitle1],
         stroke_width:"3px",
+	stroke_width_num: 3,
         target: target,
         title: title,
         title_class: "title",
