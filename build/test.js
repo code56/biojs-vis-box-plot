@@ -621,6 +621,7 @@ module.exports = biojsvisboxplot = function(init_options)
         } else {
             tooltip = options.all_disease_tooltip;  
         }
+        jitter = options.jitter;
         svg.call(tooltip);
         box_width = options.box_width;
         box_width_wiskers =(box_width - options.box_width_wiskers)/2; //assumes box width > box_width wiskers
@@ -633,14 +634,30 @@ module.exports = biojsvisboxplot = function(init_options)
         probe_size = graph.size_of_probe_collumn;
         disease_state_size = graph.size_of_disease_state_collumn;
         sample_type_size = disease_state_size/number_sample_types;
-        x_buffer = (0.75 * graph.page_options.width_to_support_many_samples) +  (2 * graph.page_options.width_to_support_many_samples * (probe)) + (probe_size * probe) + (disease_state_size * disease_state); 
-        //Add vertical lline
-        if (options.probe_count == 1) {
-            x_buffer = probe_size/2 - (number_sample_types * box_width);
+        x_buffer = 0;
+        if (sample_type_size < box_width && options.bar_graph == "yes") {
+            box_width = sample_type_size/2;
+            stroke_width_num = sample_type_size/4;
+            x_buffer = (number_sample_types * box_width); //+ (number_sample_types/2 * stroke_width_num);
         }
-        if (options.bar_graph == "yes") {
+        if (number_sample_types == 1) {
+            number_sample_types = 5/3;
+        }
+        x_buffer += (0.75 * graph.page_options.width_to_support_many_samples) +  (2 * graph.page_options.width_to_support_many_samples * (probe)) + (probe_size * probe) + (disease_state_size * disease_state); 
+        //Add vertical lline
+
+        if (options.probe_count == 1 && options.include_disease_state_x_axis != "yes" && options.bar_graph == "yes") {
+            x_buffer = probe_size/2 - (number_sample_types * box_width) + (sample_type * box_width) + (sample_type * stroke_width_num);
             opacity = 0.4;
-            x_buffer += ((1 + sample_type) * box_width) + (sample_type * stroke_width_num);
+            svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[2], svg, scaleY, colour_wiskers);
+        }
+        else if (options.bar_graph == "yes") {
+            opacity = 0.4;
+            if (options.include_disease_state_x_axis != "yes") {
+                x_buffer = x_buffer + (probe_size / number_sample_types) - (number_sample_types/2 * box_width) - (number_sample_types/2 * stroke_width_num) + (sample_type * box_width) + (sample_type *stroke_width_num);
+            } else {
+                x_buffer = x_buffer + (disease_state_size / number_sample_types) - (number_sample_types/2 * box_width) - (number_sample_types/2 * stroke_width_num) + (sample_type * box_width) + (sample_type *stroke_width_num);
+            }
             svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[2], svg, scaleY, colour_wiskers);
         } else {
             opacity = 1;
@@ -673,36 +690,77 @@ module.exports = biojsvisboxplot = function(init_options)
             .attr("opacity", opacity)
             .on("mouseover", tooltip.show) 
             .on("mouseout", tooltip.hide);
+        //Add min line
+        if (options.bar_graph == "yes") {
             //Add min line
-            if (options.bar_graph == "yes") {
-                //Add min line
-                svg = this.add_line_to_box(options.stroke_width, x_buffer + box_width/4, box_width/2, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers/2);
-                //Add max line
-                svg = this.add_line_to_box(options.stroke_width, x_buffer + box_width/4, box_width/2, box_plot_vals[2], svg, scaleY, colour_wiskers, box_width_wiskers/2);
-                //Add median lines
-                svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[1], svg, scaleY, colour_wiskers, box_width_wiskers);
-                //Add outside lines
-                svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer, 0, box_plot_vals[1], svg, scaleY, colour_wiskers);
-                svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width, 0, box_plot_vals[1], svg, scaleY, colour_wiskers);
-            } else {
-               //Add max line
-                svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers);
-                //Add median line
-                svg = this.add_line_to_box(options.stroke_width, x_buffer + box_width*.25, box_width*0.5, box_plot_vals[2], svg, scaleY, colour_median, 0);
-                //Add max line
-                svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[4], svg, scaleY, colour_wiskers, box_width_wiskers);
-            }
+            svg = this.add_line_to_box(options.stroke_width, x_buffer + box_width/4, box_width/2, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers/2);
+            //Add max line
+            svg = this.add_line_to_box(options.stroke_width, x_buffer + box_width/4, box_width/2, box_plot_vals[2], svg, scaleY, colour_wiskers, box_width_wiskers/2);
+            //Add median lines
+            svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[1], svg, scaleY, colour_wiskers, box_width_wiskers);
+            //Add outside lines
+            svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer, 0, box_plot_vals[1], svg, scaleY, colour_wiskers);
+            svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width, 0, box_plot_vals[1], svg, scaleY, colour_wiskers);
+        } else {
+           //Add max line
+            svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers);
+            //Add median line
+            svg = this.add_line_to_box(options.stroke_width, x_buffer + box_width*.25, box_width*0.5, box_plot_vals[2], svg, scaleY, colour_median, 0);
+            //Add max line
+            svg = this.add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[4], svg, scaleY, colour_wiskers, box_width_wiskers);
+        }
         //Option to allow the user to test their values
         if (options.test == "yes") {
             this.test_values(disease_state_name + " " + probe_name + "|" + sample_type_name, box_plot_vals, graph, options);
         }
-        if (options.draw_scatter_on_box == "yes") {
-            svg = this.add_scatter_to_box(graph, samples, x_buffer + box_width/2, sample_type, "white", colour_box);
-        }
+        if (options.draw_scatter_on_box == "yes" && jitter != "yes") {
+            svg = this.add_scatter_to_box(graph, samples, x_buffer + box_width/2, sample_type, "white", "black");
+        } else if (options.draw_scatter_on_box == "yes" && jitter == "yes") {
+            svg = this.draw_jitter_scatter(graph, samples, x_buffer, box_width, sample_type, "white", colour_box);
+        } 
         graph.svg = svg;
         return graph;
     }
 
+    this.draw_jitter_scatter = function(graph, samples, x, box_width, sample_type, colour, colour_stroke) {
+        scaleXBox = d3.scale.ordinal()
+            .rangePoints([x, x + box_width]);
+       options = graph.options;
+        radius = options.radius;        
+        scaleXBox.domain(samples);
+        svg = graph.svg;
+        scale = (box_width) / samples.length;
+        svg.selectAll(".dot") // class of .dot
+            .data(samples) // use the options.data and connect it to the elements that have .dot css
+            .enter() // this will create any new data points for anything that is missing.
+            .append("circle") // append an object circle
+            .attr("class", function(d) {
+                    //adds the sample type as the class so that when the sample type is overered over 
+                    //on the x label, the dots become highlighted 
+                    return "sample-type-" + sample_type})
+            .attr("r", radius) //radius 3.5
+            .attr("cx", function(d, i) {
+                    cx = x + (scale * i);
+                    return cx;
+                    })
+            .attr("cy", function(d) {
+                // set the y position as based off y_column
+                // ensure that you put these on separate lines to make it easier to troubleshoot
+                var cy =  scaleY(d);
+                return cy;
+            })
+            .style("stroke", colour_stroke)
+            .style("stroke-width","1px")
+            .style("fill", colour)
+            .attr("opacity", 0.8);
+           // .on('mouseover', tooltip.show)
+           // .on('mouseout', tooltip.hide);
+
+            return svg;
+       
+    }
+
+ 
     /* A small function to test the values from the computed values
      * Checks values from graphs downloaded from stemformatics */
     this.test_values = function(name, box_plot_vals, graph, options) {

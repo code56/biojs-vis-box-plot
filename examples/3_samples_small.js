@@ -151,6 +151,7 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
+	jitter: "no",
 	/******** Options for Data order *****************************************/
 	// If no orders are given than the order is taken from the dataset
 	bar_graph: "no",	
@@ -165,6 +166,8 @@ d3.tsv(data_url,function (error,data){
 	size_of_disease_state_labels: 200, //The size allotted to the disease state labels
 	x_axis_padding: 50,
     	all_disease_tooltip: all_disease_tooltip, // using d3-tips
+	draw_scatter_on_box: "yes",
+	radius: 3,
 	/******** End Options for Data order *****************************************/    
         /******** Options for Sizing *****************************************/
         legend_padding: 50,

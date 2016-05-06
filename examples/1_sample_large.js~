@@ -156,6 +156,8 @@ d3.tsv(data_url,function (error,data){
         test: "yes", //Only used to test the data -> outputs the values to a file on the computer
         test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
 	bar_graph: "no",
+	draw_scatter_on_box: "yes",
+	radius: 3,
         /******** Options for Sizing *****************************************/
         legend_padding: 50,
         legend_rect_size: 20,
@@ -220,6 +222,7 @@ d3.tsv(data_url,function (error,data){
         probe_count: probe_count,
         probes: probes,
         sample_types: sample_types,
+        num_sample_types: sample_type_count,
         // Can fit 4 subtitles currently
         subtitles: [subtitle1],
         stroke_width:"3px",

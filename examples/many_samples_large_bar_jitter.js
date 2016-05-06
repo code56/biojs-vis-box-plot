@@ -118,7 +118,7 @@ d3.tsv(data_url,function (error,data){
     probes = probes;
     sample_types = sample_types;
     probe_count = probe_count;
-    title = "Box Plot";
+    title = "Bar Graph";
     subtitle1 = "Subtitle"
     subtitle2 = "Subtitle"
     target = rootDiv;
@@ -150,30 +150,30 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
-	jitter: "no",
+	jitter: "yes",
         test: "yes", //Only used to test the data -> outputs the values to a file on the computer
         test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
-        /******** Options for Data order *****************************************/
-        // If no orders are given than the order is taken from the dataset
-        bar_graph: "no",	
-        box_width: 10,
-        box_width_wiskers: 5,
-        disease_state_order: "none", //Order of the disease state on the x axis
-        sample_type_order: "none", //Order of the sample types on the x axis
-        probe_order: "none",	//Order of the probes on the x axis
-        //Including the disease state on the x axis causes the order to change as the data becomes
-        //sorted by probes and disease state
-        include_disease_state_x_axis: "no", //Includes the disease state on the x axis
-        size_of_disease_state_labels: 200, //The size allotted to the disease state labels
-        x_axis_padding: 50,
-        all_disease_tooltip: all_disease_tooltip, // using d3-tips
+	/******** Options for Data order *****************************************/
+	// If no orders are given than the order is taken from the dataset
+	bar_graph: "yes",	
+	box_width: 10,
+	box_width_wiskers: 3,
+	disease_state_order: "none", //Order of the disease state on the x axis
+	sample_type_order: "none", //Order of the sample types on the x axis
+	probe_order: "none",	//Order of the probes on the x axis
+	//Including the disease state on the x axis causes the order to change as the data becomes
+	//sorted by probes and disease state
+	include_disease_state_x_axis: "no", //Includes the disease state on the x axis
+	size_of_disease_state_labels: 200, //The size allotted to the disease state labels
+	x_axis_padding: 50,
+    	all_disease_tooltip: all_disease_tooltip, // using d3-tips
 	draw_scatter_on_box: "yes",
 	radius: 3,
-        /******** End Options for Data order *****************************************/    
+	/******** End Options for Data order *****************************************/    
         /******** Options for Sizing *****************************************/
         legend_rect_size: 20,
-        legend_padding: 50,
-        height: 400,
+	legend_padding: 50,
+	height: 400,
         width: 600,
         margin:{top: 50, left: 60, bottom: 500, right: 200},
         initial_padding: 10,
@@ -184,29 +184,30 @@ d3.tsv(data_url,function (error,data){
         // reducing. Number of increments is how many numbers are displayed on the y axis. For none to
         // be displayed multiply by 0
         display: {hoverbars: "yes", error_bars: "yes", legend: "yes", horizontal_lines: "yes", vertical_lines: "yes", x_axis_labels: "yes", y_axis_title: "yes", horizontal_grid_lines: "yes"},
+
         circle_radius: 2,  // for the box points
         hover_circle_radius: 10,
         /*********** End of sizing options **********************************/
-        /******** Options for Data order *****************************************/
-        // If no orders are given than the order is taken from the dataset
-        disease_state_order: "none", //Order of the disease state on the x axis
-        sample_type_order: "none", //Order of the sample types on the x axis
-        probe_order: "none",	//Order of the probes on the x axis
-        //Including the disease state on the x axis causes the order to change as the data becomes
-        //sorted by probes and disease state
-        include_disease_state_x_axis: "yes", //Includes the disease state on the x axis
-        size_of_disease_state_labels: 200, //The size allotted to the disease state labels
-        x_axis_padding: 50,
-        /******** End Options for Data order *****************************************/
+	/******** Options for Data order *****************************************/
+	// If no orders are given than the order is taken from the dataset
+	disease_state_order: "none", //Order of the disease state on the x axis
+	sample_type_order: "none", //Order of the sample types on the x axis
+	probe_order: "none",	//Order of the probes on the x axis
+	//Including the disease state on the x axis causes the order to change as the data becomes
+	//sorted by probes and disease state
+	include_disease_state_x_axis: "yes", //Includes the disease state on the x axis
+	size_of_disease_state_labels: 200, //The size allotted to the disease state labels
+	x_axis_padding: 50,
+	/******** End Options for Data order *****************************************/
         background_colour: "white",
         background_stroke_colour:  "black",
         background_stroke_width:  "1px",
         colour: colours,
-        font_style: "Arial",
-        grid_colour: "black",
-        grid_opacity: 0.5,
-        y_label_text_size: "14px",
-        y_label_x_val: 40,
+	font_style: "Arial",
+	grid_colour: "black",
+	grid_opacity: 0.5,
+	y_label_text_size: "14px",
+	y_label_x_val: 40,
         data: data,
         // eq. yes for x_axis labels indicates the user wants labels on the x axis (sample types)
         // indicate yes or no to each of the display options below to choose which are displayed on the graph
@@ -222,7 +223,7 @@ d3.tsv(data_url,function (error,data){
         legend_range: [0,100],
         line_stroke_width: "2px",
         //-------------------------Legend Values -----------------------//
-	    legend_padding: 50,
+	legend_padding: 50,
 	//default number of colours iis 39 (before it reitterates over it again)
         number_of_colours: 39,
         //2 is the chosen padding. On either side there will be padding = to the interval between the points
@@ -239,6 +240,7 @@ d3.tsv(data_url,function (error,data){
         subtitles: [subtitle1],
         stroke_width:"3px",
 	stroke_width_num: 3,
+	sample_type_count: sample_type_count,
         target: target,
         title: title,
         title_class: "title",

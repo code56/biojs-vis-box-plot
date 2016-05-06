@@ -151,6 +151,7 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
+	jitter: "no",
         test: "yes", //Only used to test the data -> outputs the values to a file on the computer
         test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
 	/******** Options for Data order *****************************************/
@@ -166,6 +167,8 @@ d3.tsv(data_url,function (error,data){
 	include_disease_state_x_axis: "no", //Includes the disease state on the x axis
 	size_of_disease_state_labels: 200, //The size allotted to the disease state labels
 	x_axis_padding: 50,
+	draw_scatter_on_box: "yes",
+	radius: 3,
     	all_disease_tooltip: all_disease_tooltip, // using d3-tips
 	/******** End Options for Data order *****************************************/    
         /******** Options for Sizing *****************************************/

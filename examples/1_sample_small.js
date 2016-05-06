@@ -150,6 +150,7 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
+	jitter: "no",
         test: "yes", //Only used to test the data -> outputs the values to a file on the computer
         test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
 	bar_graph: "no",

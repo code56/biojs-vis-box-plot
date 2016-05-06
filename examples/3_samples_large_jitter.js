@@ -25,6 +25,7 @@ var tip = d3.tip()
         return temp;
     });
 
+
 // this tooltip function is passed into the graph via the tooltip
 var tooltip = d3.tip()
     .attr('class', 'd3-tip')
@@ -38,10 +39,9 @@ var tooltip = d3.tip()
         return temp; 
     });
 
-
 //The url's to the data displayed
-data_url= '../data/ds_id_5003_scatter_gata3.tsv';
-//data_url = '../data/ds_id_2000_scatter_stat1.tsv';
+//data_url= '../data/ds_id_5003_scatter_gata3.tsv';
+data_url = '../test_many.csv';//data/ds_id_2000_scatter_stat1.tsv';
 //data_url = '../data/ds_id_2000_scatter_pdgfd.tsv';
 
 /* Extracting the data from the csv files for use in the graph
@@ -57,18 +57,18 @@ d3.tsv(data_url,function (error,data){
     probes = new Array();
     probe_count = 0;
     //Saving the sample types and corrosponding id to use when 
-    //itterating over for the hovering over the ample types and altering the box
+    //itterating over for the hovering over the ample types and altering the scatter
     //points for that sample type
     sample_types = new Array();
     sample_type_array = new Array();
     sample_type_count = 0;
     j = 0;
-    disease_states = [];
-    disease_state_names = "";
     //need to put in the number of colours that are being used (so that it
     //can reiitterate over them again if necesary
     number_of_colours = 39;
     colour_count = 0;
+    disease_states = [];
+    disease_state_names = "";
     data.forEach(function(d){
         // ths + on the front converts it into a number just in case
         d.Expression_Value = +d.Expression_Value;
@@ -150,45 +150,15 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
-	jitter: "no",
+	jitter: "yes",
         test: "yes", //Only used to test the data -> outputs the values to a file on the computer
         test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
-        /******** Options for Data order *****************************************/
+        // save as .csv file 
+        /********   Options for Data order *****************************************/
         // If no orders are given than the order is taken from the dataset
         bar_graph: "no",	
-        box_width: 10,
+        box_width: 20,
         box_width_wiskers: 5,
-        disease_state_order: "none", //Order of the disease state on the x axis
-        sample_type_order: "none", //Order of the sample types on the x axis
-        probe_order: "none",	//Order of the probes on the x axis
-        //Including the disease state on the x axis causes the order to change as the data becomes
-        //sorted by probes and disease state
-        include_disease_state_x_axis: "no", //Includes the disease state on the x axis
-        size_of_disease_state_labels: 200, //The size allotted to the disease state labels
-        x_axis_padding: 50,
-        all_disease_tooltip: all_disease_tooltip, // using d3-tips
-	draw_scatter_on_box: "yes",
-	radius: 3,
-        /******** End Options for Data order *****************************************/    
-        /******** Options for Sizing *****************************************/
-        legend_rect_size: 20,
-        legend_padding: 50,
-        height: 400,
-        width: 600,
-        margin:{top: 50, left: 60, bottom: 500, right: 200},
-        initial_padding: 10,
-        x_axis_label_padding: 10,//padding for the x axis labels (how far below the graph)
-        text_size: "12px",
-        title_text_size: "16px",
-        increment: number_of_increments * 0.5, // To double the number of increments ( mutliply by 2, same for 
-        // reducing. Number of increments is how many numbers are displayed on the y axis. For none to
-        // be displayed multiply by 0
-        display: {hoverbars: "yes", error_bars: "yes", legend: "yes", horizontal_lines: "yes", vertical_lines: "yes", x_axis_labels: "yes", y_axis_title: "yes", horizontal_grid_lines: "yes"},
-        circle_radius: 2,  // for the box points
-        hover_circle_radius: 10,
-        /*********** End of sizing options **********************************/
-        /******** Options for Data order *****************************************/
-        // If no orders are given than the order is taken from the dataset
         disease_state_order: "none", //Order of the disease state on the x axis
         sample_type_order: "none", //Order of the sample types on the x axis
         probe_order: "none",	//Order of the probes on the x axis
@@ -197,7 +167,28 @@ d3.tsv(data_url,function (error,data){
         include_disease_state_x_axis: "yes", //Includes the disease state on the x axis
         size_of_disease_state_labels: 200, //The size allotted to the disease state labels
         x_axis_padding: 50,
-        /******** End Options for Data order *****************************************/
+    	all_disease_tooltip: all_disease_tooltip, // using d3-tips
+	draw_scatter_on_box: "yes",
+	radius: 3,
+	/******** End Options for Data order *****************************************/    
+        /******** Options for Sizing *****************************************/
+        legend_padding: 50,
+        legend_rect_size: 20,	
+    	height: 400,
+        width: 600,
+        margin:{top: 50, left: 60, bottom: 500, right: 150},
+        initial_padding: 10,
+        x_axis_label_padding: 10,//padding for the x axis labels (how far below the graph)
+        text_size: "12px",
+        title_text_size: "16px",
+        increment: number_of_increments * 0.5, // To double the number of increments ( mutliply by 2, same for 
+        // reducing. Number of increments is how many numbers are displayed on the y axis. For none to
+        // be displayed multiply by 0
+        display: {hoverbars: "yes", error_bars: "yes", legend: "yes", horizontal_lines: "no", vertical_lines: "no", x_axis_labels: "yes", y_axis_title: "yes", horizontal_grid_lines: "yes"},
+
+        circle_radius: 2,  // for the scatter points
+        hover_circle_radius: 10,
+        /*********** End of sizing options **********************************/
         background_colour: "white",
         background_stroke_colour:  "black",
         background_stroke_width:  "1px",
@@ -212,6 +203,7 @@ d3.tsv(data_url,function (error,data){
         // indicate yes or no to each of the display options below to choose which are displayed on the graph
         domain_colours : ["#FFFFFF","#7f3f98"],
         error_bar_width:5,
+	error_stroke_width: "1px",
         error_dividor:100,//100 means error bars will not show when error < 1% value 
         //horizontal lines takes a name, colour and the yvalue. If no colour is given one is chosen at random
         horizontal_lines: [["Detection Threshold", "green", 5], ["Median", , 8.93]],
@@ -221,9 +213,7 @@ d3.tsv(data_url,function (error,data){
         legend_class: "legend",
         legend_range: [0,100],
         line_stroke_width: "2px",
-        //-------------------------Legend Values -----------------------//
-	    legend_padding: 50,
-	//default number of colours iis 39 (before it reitterates over it again)
+       //default number of colours iis 39 (before it reitterates over it again)
         number_of_colours: 39,
         //2 is the chosen padding. On either side there will be padding = to the interval between the points
         //1 gives 1/2 the interval on either side etc.
