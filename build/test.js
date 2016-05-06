@@ -716,7 +716,7 @@ module.exports = biojsvisboxplot = function(init_options)
         if (options.draw_scatter_on_box == "yes" && jitter != "yes") {
             svg = this.add_scatter_to_box(graph, samples, x_buffer + box_width/2, sample_type, "white", "black");
         } else if (options.draw_scatter_on_box == "yes" && jitter == "yes") {
-            svg = this.draw_jitter_scatter(graph, samples, x_buffer, box_width, sample_type, "white", colour_box);
+            svg = this.draw_jitter_scatter(graph, samples, x_buffer + (box_width/4), box_width, sample_type, "white", colour_box);
         } 
         graph.svg = svg;
         return graph;
@@ -729,7 +729,7 @@ module.exports = biojsvisboxplot = function(init_options)
         radius = options.radius;        
         scaleXBox.domain(samples);
         svg = graph.svg;
-        scale = (box_width) / samples.length;
+        scale = (box_width/2) / samples.length;
         svg.selectAll(".dot") // class of .dot
             .data(samples) // use the options.data and connect it to the elements that have .dot css
             .enter() // this will create any new data points for anything that is missing.
