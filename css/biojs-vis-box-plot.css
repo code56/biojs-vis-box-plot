@@ -25,10 +25,10 @@ div.tooltip {
     text-align:center;
 }
 
-.x_axis_diagonal_labels:hover{
+/*.x_axis_diagonal_labels:hover{
     fill: orange;
 }
-
+*/
 /* http://bl.ocks.org/ZJONSSON/3918369 */
 .legend rect {
   fill:white;

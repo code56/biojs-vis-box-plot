@@ -327,19 +327,19 @@ module.exports = biojsvisboxplot = function(init_options)
         options = graph.options;
         //Check no probe order has been given, if none given order by dataset
         if (options.probe_order != "none") {
-            probe_order = options.probe_order.split(',');
-            sample_type_order = options.sample_type_order.split(',');            
+            probe_order = options.probe_order;
+            sample_type_order = options.sample_type_order;            
             nested_values = d3.nest()
                 .key(function(d) {
                     return d.Probe;
                 })
                 .sortKeys(function(a, b) {
-                    return probe_order.indexOf(a) - probe_order.indexOf(b);
+                    return probe_order.indexOf(a.Probe) - probe_order.indexOf(b.Probe);
                 })
                 .key(function(d) {
                     return d.Sample_Type;
                 })
-                .sortKeys(function(a,b){return sample_type_order.indexOf(a) - sample_type_order.indexOf(b);})
+                .sortKeys(function(a,b){return sample_type_order.indexOf(a.Sample_Type) - sample_type_order.indexOf(b.Sample_Type);})
                 .entries(options.data);
         } else {
             nested_values = d3.nest()
@@ -610,7 +610,7 @@ module.exports = biojsvisboxplot = function(init_options)
             return svg; 
     }
 
-    this.make_tooltip = function(probe, sample_type, disease_state) {
+    this.make_box_tooltip = function(probe, sample_type, disease_state) {
         var tooltip_box = d3.tip()
             .attr('class', 'd3-tip')
             .offset([0, +110])
@@ -634,7 +634,7 @@ module.exports = biojsvisboxplot = function(init_options)
         scaleY = graph.scaleY;
         scaleX = graph.scaleX;
         options = graph.options;
-        tooltip_box = this.make_tooltip(probe_name, sample_type_name, disease_state_name);
+        tooltip_box = this.make_box_tooltip(probe_name, sample_type_name, disease_state_name);
         jitter = options.jitter;
         svg.call(tooltip_box);
         box_width = options.box_width;
@@ -1310,6 +1310,18 @@ module.exports = biojsvisboxplot = function(init_options)
         return graph;
     } // setup_watermark
 
+    this.make_legend_tooltip = function() {
+        var tooltip_legend = d3.tip()
+            .attr('class', 'd3-tip')
+            .html(function(d) {
+               temp =
+                    d + "<br/>"
+                console.log(d);
+                return temp;
+            });
+        return tooltip_legend;
+    }
+
 
     /* http://bl.ocks.org/ZJONSSON/3918369 and http://zeroviscosity.com/d3-js-step-by-step/step-1-a-basic-pie-chart
 	Interactive legend which allows you to display and not display the legend*/
@@ -1319,7 +1331,12 @@ module.exports = biojsvisboxplot = function(init_options)
 	options = graph.options;
    	var legendRectSize = options.legend_rect_size;
 	page_options = graph.page_options;
-	//Add a legend title
+    tooltip_legend = options.tooltip;
+    if (options.show_legend_tooltip != "no") {
+	    tooltip_legend = this.make_legend_tooltip();
+        svg.call(tooltip_legend);
+    }
+    //Add a legend title
         svg.append("text")
             .attr("x", page_options.width + options.legend_padding)//options.x_middle_title)             
             .attr("y", 0 - (page_options.margin.top /height_divisor) )
@@ -1328,20 +1345,9 @@ module.exports = biojsvisboxplot = function(init_options)
             .style("font-family", options.font_style)
             .style("font-size", options.title_text_size)
             .style("fill", "black")
-            .attr("class",options.title_class)
-	    .on('mouseover', function(d) {
-			var leg = document.getElementsByClassName("legendClass");
-			for (i = 0; i < leg.length; i++) {
-				if (leg[i].style.opacity != 0) {
-					d3.select(leg[i]).style("opacity", 0);
-				} else {
-					d3.select(leg[i]).style("opacity", 1);
-				}
-			}
-		});
+            .attr("class",options.title_class);
 	
-
-	//Add the legend to the svg element
+   //Add the legend to the svg element
 	var legend = svg.selectAll('.legend')
 		.data(graph.sample_type_list) //options.probs contains the name and colour of the probes
 		.enter()
@@ -1353,12 +1359,10 @@ module.exports = biojsvisboxplot = function(init_options)
 			var horizontal = -2 * legendRectSize + page_options.width + options.legend_padding;
 			var vertical = i * height - offset;
 			return 'translate(' + horizontal + ','+ vertical + ')';
-		});/*
-        .on('mouseover', function(d) {
-                console.log(d);
-                tooltip_sample.show;})
-        .on('mouseout', tooltip_sample.hide);
-*/
+		})
+        .on('mouseover', tooltip_legend.show)
+        .on('mouseout', tooltip_legend.hide);
+
 	//Add legend squares
 	legend.append('rect')
 		.attr('width', legendRectSize)
@@ -1376,17 +1380,15 @@ module.exports = biojsvisboxplot = function(init_options)
                 })
 		.style('opacity', 1)
         .on('mouseover', function(d) {
-            var leg = document.getElementById(d);
-            //for (i = 0; i < leg.length; i++) {
-            if (leg.style.opacity != 0) {
-                d3.select(leg).style("opacity", 0);
-            } else {
-                d3.select(leg).style("opacity", 1);
-            }
-            //}
+            if (options.legend_toggle_opacity != "no") {
+                var leg = document.getElementById(d);
+                if (leg.style.opacity != 0) {
+                    d3.select(leg).style("opacity", 0);
+                } else {
+                    d3.select(leg).style("opacity", 1);
+                }
+            } 
         });
-                  //  console.log(d);
-                  //  tooltip_sample.show;})
  //end on_click button
     if (options.legend_text != "no") {
 	//Add legend text
