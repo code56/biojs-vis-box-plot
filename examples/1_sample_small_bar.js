@@ -171,6 +171,9 @@ d3.tsv(data_url,function (error,data){
         /******** Options for Sizing *****************************************/
         legend_padding: 50,
         legend_rect_size: 20,
+	legend_text: "yes",
+	legend_shorten_text: "yes",
+	substring_legend_length: 15,
 	height: 200,
         width: 300,
         margin:{top: 50, left: 60, bottom: 500, right: 100},
@@ -185,8 +188,6 @@ d3.tsv(data_url,function (error,data){
 
         circle_radius: 2,  // for the scatter points
         hover_circle_radius: 5,
-    
-
         background_colour: "white",
         background_stroke_colour:  "black",
         background_stroke_width:  "1px",

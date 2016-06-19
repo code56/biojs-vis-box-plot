@@ -13,6 +13,26 @@ var colours = ["DarkOrchid", "Orange", "DodgerBlue", "Blue","BlueViolet","Brown
 "DarkViolet","DeepPink","DeepSkyBlue","DodgerBlue","FireBrick","ForestGreen","Fuchsia",
 "Gold","GoldenRod","Green","GreenYellow","HotPink","IndianRed","Indigo"];
 
+var legend_probe_tip = d3.tip()
+	.attr('class', 'd3-tip')
+    	.offset([0, +110])
+        .html(function(d) {
+        sample_type = d.sample_type;
+        temp =
+            "Sample Type: " +  sample_type + "<br/>";
+	console.log("poop");
+        return temp;
+    });
+
+var legend_sample_tip = d3.tip()
+	.attr('class', 'd3-tip')
+    	.offset([0, +110])
+        .html(function(d) {
+        probe = d;
+        temp =
+            "Probe: " +  probe + "<br/>";
+        return temp;
+    });
 
 // tip which is displayed when hovering over a collumn. Displays the sample type 
 //of the collumn
@@ -150,6 +170,7 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
+	jitter: "no",
         test: "yes", //Only used to test the data -> outputs the values to a file on the computer
         test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
 	/******** Options for Data order *****************************************/
@@ -174,7 +195,7 @@ d3.tsv(data_url,function (error,data){
 	legend_padding: 50,
 	height: 400,
         width: 600,
-        margin:{top: 50, left: 60, bottom: 500, right: 200},
+        margin:{top: 50, left: 60, bottom: 500, right: 300},
         initial_padding: 10,
         x_axis_label_padding: 10,//padding for the x axis labels (how far below the graph)
         text_size: "12px",
@@ -183,7 +204,6 @@ d3.tsv(data_url,function (error,data){
         // reducing. Number of increments is how many numbers are displayed on the y axis. For none to
         // be displayed multiply by 0
         display: {hoverbars: "yes", error_bars: "yes", legend: "yes", horizontal_lines: "yes", vertical_lines: "yes", x_axis_labels: "yes", y_axis_title: "yes", horizontal_grid_lines: "yes"},
-
         circle_radius: 2,  // for the box points
         hover_circle_radius: 10,
         /*********** End of sizing options **********************************/
@@ -221,6 +241,11 @@ d3.tsv(data_url,function (error,data){
         legend_class: "legend",
         legend_range: [0,100],
         line_stroke_width: "2px",
+	legend_probe_tip: legend_probe_tip,
+	legend_sample_tip: legend_sample_tip,
+	legend_text: "yes",
+	legend_shorten_text: "yes",
+	substring_legend_length: 15,
         //-------------------------Legend Values -----------------------//
 	legend_padding: 50,
 	//default number of colours iis 39 (before it reitterates over it again)

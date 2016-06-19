@@ -610,19 +610,33 @@ module.exports = biojsvisboxplot = function(init_options)
             return svg; 
     }
 
+    this.make_tooltip = function(probe, sample_type, disease_state) {
+        var tooltip_box = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([0, +110])
+            .html(function(d) {
+               temp =
+                    "Probe: " + probe + "<br/>" +
+                    "Sample: " + sample_type +"<br/>"+
+                    "Disease State: " + disease_state + "<br/>"
+                return temp;
+            });
+        return tooltip_box;
+    }
+
+
     /* Draw box plot draws the box and wiskers onto the graph and also if it is a bar graph this is drawn on too */
     this.draw_box_plot = function(samples, graph, box_plot_vals, probe, disease_state, sample_type, number_sample_types, probe_name, sample_type_name, disease_state_name) {
+        console.log(probe);
+        console.log(disease_state);
+        console.log(samples.length);
         svg = graph.svg;
         scaleY = graph.scaleY;
         scaleX = graph.scaleX;
         options = graph.options;
-        if (options.include_disease_state_x_axis == "yes") {
-            tooltip = options.tooltip;
-        } else {
-            tooltip = options.all_disease_tooltip;  
-        }
+        tooltip_box = this.make_tooltip(probe_name, sample_type_name, disease_state_name);
         jitter = options.jitter;
-        svg.call(tooltip);
+        svg.call(tooltip_box);
         box_width = options.box_width;
         box_width_wiskers =(box_width - options.box_width_wiskers)/2; //assumes box width > box_width wiskers
         colour_wiskers = options.colour[sample_type];
@@ -664,9 +678,10 @@ module.exports = biojsvisboxplot = function(init_options)
             x_buffer += (sample_type_size * (sample_type)) + (sample_type_size * 3 / 8);
             svg = this.add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[4], svg, scaleY, colour_wiskers);
         }
+        //---------------------------Want to add the correct tooltip -> this is taken as the first data point in the box ---------------------//
+        var data = options.data[probe * disease_state];
         //Add box
         svg.append("rect")
-            .data(options.data)
             .attr('width', box_width)
             .attr('x', x_buffer)
             .attr('id', id)
@@ -688,8 +703,9 @@ module.exports = biojsvisboxplot = function(init_options)
                 })
             .attr("fill", colour_box)
             .attr("opacity", opacity)
-            .on("mouseover", tooltip.show) 
-            .on("mouseout", tooltip.hide);
+            .on("mouseover", tooltip_box.show) 
+            .on("mouseout", tooltip_box.hide);
+
         //Add min line
         if (options.bar_graph == "yes") {
             //Add min line
@@ -770,7 +786,7 @@ module.exports = biojsvisboxplot = function(init_options)
         if (options.bar_graph == "yes") {
             row = name + "," + box_plot_vals[1] + "," + 0 + "," + box_plot_vals[0] + "," + box_plot_vals[2] + "," + 0 + "," + 0 + "," + 0;
         }
-        console.log(row);
+        //console.log(row);
         /*fs.writeFile(options.test_path, row, function(err) {
             if(err) {
                 return console.log(err);
@@ -1303,7 +1319,6 @@ module.exports = biojsvisboxplot = function(init_options)
 	options = graph.options;
    	var legendRectSize = options.legend_rect_size;
 	page_options = graph.page_options;
-	
 	//Add a legend title
         svg.append("text")
             .attr("x", page_options.width + options.legend_padding)//options.x_middle_title)             
@@ -1338,8 +1353,12 @@ module.exports = biojsvisboxplot = function(init_options)
 			var horizontal = -2 * legendRectSize + page_options.width + options.legend_padding;
 			var vertical = i * height - offset;
 			return 'translate(' + horizontal + ','+ vertical + ')';
-		});
-
+		});/*
+        .on('mouseover', function(d) {
+                console.log(d);
+                tooltip_sample.show;})
+        .on('mouseout', tooltip_sample.hide);
+*/
 	//Add legend squares
 	legend.append('rect')
 		.attr('width', legendRectSize)
@@ -1355,30 +1374,41 @@ module.exports = biojsvisboxplot = function(init_options)
 		.style('stroke',  function(d, i) {
                         return options.colour[i]; //First element stored in the probe array is colour
                 })
-		.style('opacity', 1);/*
-		.on('mouseover', function() {
-                        var sample_type = (this.id);
-                        //Gets the elements by probe and assigns colour to the line (this is started off hidden)
-                        var probe_group = document.getElementsByClassName("line-probe-" + probe.replace(/\ |(|)/g,''));
-                        for (i = 0; i < probe_group.length; i++) {
-                            if(probe_group[i].style.opacity != 0) {
-                                d3.select(probe_group[i]).style("opacity", 0);
-                            } else {
-                                d3.select(probe_group[i]).style("opacity", 1);
-                            }
-                        }
-                    }); //end on_click button
-*/
-	//Add legend text
-	legend.append('text')
-		.attr('class', "legendClass")
-		.attr('x', legendRectSize + legendSpacing)
-		.attr('y', legendRectSize - legendSpacing)
-	        .style("font-family", options.font_style)
-            	.style("font-size", options.text_size)
 		.style('opacity', 1)
-		.text(function(d) { return d; });
-
+        .on('mouseover', function(d) {
+            var leg = document.getElementById(d);
+            //for (i = 0; i < leg.length; i++) {
+            if (leg.style.opacity != 0) {
+                d3.select(leg).style("opacity", 0);
+            } else {
+                d3.select(leg).style("opacity", 1);
+            }
+            //}
+        });
+                  //  console.log(d);
+                  //  tooltip_sample.show;})
+ //end on_click button
+    if (options.legend_text != "no") {
+	//Add legend text
+        legend.append('text')
+            .attr('class', "legendClass")
+            .attr('id', function(d) {
+                        return d;
+                    })
+            .attr('x', legendRectSize + legendSpacing)
+            .attr('y', legendRectSize - legendSpacing)
+            .style("font-family", options.font_style)
+            .style("font-size", options.text_size)
+            .style('opacity', 1)
+            .text(function(d) { 
+                if (options.legend_shorten_text == "yes") {
+                    text = d.substring(0, options.substring_legend_length);
+                } else {
+                    text = d; 
+                }
+                return text;
+            });
+    }
 	graph.svg = svg;
 	return graph;
     }
@@ -1409,26 +1439,13 @@ module.exports = biojsvisboxplot = function(init_options)
         graph = this.setup_box_plot(graph);
         graph = this.setup_D3_legend(graph);
         graph = this.setup_vertical_lines(graph);
-	 // Only display the vertical lines if the user chooses so
+	    // Only display the vertical lines if the user chooses so
         if (options.display.vertical_lines == "yes") {
             graph = this.setup_vertical_lines(graph);
         }
-        // Display the legend if the user has specified they want the legend
-      //  if (options.display.legend == "yes") {
-       //     graph = this.setup_legend(graph);
-       // }
-        //if (options.display.error_bars == "yes") {
-        //    graph = this.setup_error_bars(graph);
-       // }
-      //  graph = this.setup_box_line(graph);
         if (options.display.horizontal_lines == "yes") {
             graph = this.setup_horizontal_lines(graph);
         }
-        //graph = this.setup_watermark(graph);
-    //    if (options.display.hoverbars == "yes") {
-    //        graph = this.setup_hover_bars(graph);
-   //     }
-
         return graph;
 
     }  // end setup_graph  
@@ -1438,7 +1455,6 @@ module.exports = biojsvisboxplot = function(init_options)
         var options = this.default_options();
         options = init_options;
         page_options = {}; // was new Object() but jshint wanted me to change this
-        //size_options = {};
         var graph = {}; // this is a new object
         graph.options = options;
         graph = this.preprocess_lines(graph);
