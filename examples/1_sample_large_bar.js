@@ -187,8 +187,6 @@ d3.tsv(data_url,function (error,data){
 	include_disease_state_x_axis: "yes", //Includes the disease state on the x axis
 	size_of_disease_state_labels: 200, //The size allotted to the disease state labels
 	x_axis_padding: 50,
-    	show_legend_tooltip: "no",
-        legend_toggle_opacity: "no", 
 	draw_scatter_on_box: "yes",
 	radius: 3,
 	/******** End Options for Data order *****************************************/
@@ -218,6 +216,8 @@ d3.tsv(data_url,function (error,data){
         line_stroke_width: "2px",
 	legend_text: "yes",
 	legend_shorten_text: "yes",
+    	show_legend_tooltip: "no",
+        legend_toggle_opacity: "no", 
 	substring_legend_length: 15,
        //default number of colours iis 39 (before it reitterates over it again)
         number_of_colours: 39,

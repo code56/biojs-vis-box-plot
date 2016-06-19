@@ -214,7 +214,9 @@ d3.tsv(data_url,function (error,data){
         legend_range: [0,100],
         line_stroke_width: "2px",
 	legend_text: "yes",
-	legend_shorten_text: "yes",
+	legend_shorten_text: "no",
+    	show_legend_tooltip: "no",
+        legend_toggle_opacity: "no", 
        //default number of colours iis 39 (before it reitterates over it again)
         number_of_colours: 39,
         //2 is the chosen padding. On either side there will be padding = to the interval between the points

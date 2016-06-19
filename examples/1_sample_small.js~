@@ -185,8 +185,6 @@ d3.tsv(data_url,function (error,data){
 
         circle_radius: 2,  // for the scatter points
         hover_circle_radius: 5,
-    
-
         background_colour: "white",
         background_stroke_colour:  "black",
         background_stroke_width:  "1px",
@@ -211,6 +209,9 @@ d3.tsv(data_url,function (error,data){
         legend_class: "legend",
         legend_range: [0,100],
         line_stroke_width: "2px",
+	legend_text: "yes",
+	legend_shorten_text: "yes",
+	substring_legend_length: 15,
        //default number of colours iis 39 (before it reitterates over it again)
         number_of_colours: 39,
         //2 is the chosen padding. On either side there will be padding = to the interval between the points

@@ -222,9 +222,11 @@ d3.tsv(data_url,function (error,data){
         legend_class: "legend",
         legend_range: [0,100],
         line_stroke_width: "2px",
-	legend_text: "yes",
+	legend_text: "no",
 	legend_shorten_text: "yes",
 	substring_legend_length: 15,
+    	show_legend_tooltip: "yes",
+        legend_toggle_opacity: "no", 
         //-------------------------Legend Values -----------------------//
 	legend_padding: 50,
 	//default number of colours iis 39 (before it reitterates over it again)

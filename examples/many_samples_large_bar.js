@@ -242,7 +242,9 @@ d3.tsv(data_url,function (error,data){
         legend_range: [0,100],
         line_stroke_width: "2px",
 	legend_text: "yes",
-	legend_shorten_text: "yes",
+	legend_shorten_text: "no",
+    	show_legend_tooltip: "no",
+        legend_toggle_opacity: "no", 
 	substring_legend_length: 15,
         //-------------------------Legend Values -----------------------//
 	legend_padding: 50,

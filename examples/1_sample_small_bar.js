@@ -171,9 +171,11 @@ d3.tsv(data_url,function (error,data){
         /******** Options for Sizing *****************************************/
         legend_padding: 50,
         legend_rect_size: 20,
-	legend_text: "yes",
+	legend_text: "no",
 	legend_shorten_text: "yes",
 	substring_legend_length: 15,
+    	show_legend_tooltip: "yes",
+        legend_toggle_opacity: "no", 
 	height: 200,
         width: 300,
         margin:{top: 50, left: 60, bottom: 500, right: 100},
