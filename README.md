@@ -84,7 +84,7 @@ curl -sL https://deb.nodesource.com/setup_4.x — Node.js v4 LTS "Argon" | sudo 
 
 sudo apt-get install -y nodejs
 
-sudo npm install -g watchify biojs-sniper
+sudo npm install -g watchify biojs-sniper mkdirp browserify
 
 ```
 
