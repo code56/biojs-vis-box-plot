@@ -80,11 +80,11 @@ Note: If you are running Ubuntu LTS 12.04 or 14.04 you will be behind in npm. To
 ```
 sudo apt-get purge nodejs npm
 
-curl -sL https://deb.nodesource.com/setup | sudo bash -
+curl -sL https://deb.nodesource.com/setup_4.x — Node.js v4 LTS "Argon" | sudo bash -
 
 sudo apt-get install -y nodejs
 
-sudo npm install -g watchify biojs-sniper
+sudo npm install -g watchify biojs-sniper mkdirp browserify
 
 ```
 
