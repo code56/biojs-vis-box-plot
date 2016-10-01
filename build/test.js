@@ -206,8 +206,6 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                 .style("text-anchor", "end")
                 .text(options.x_axis_title);
 
-        graph.nested_values = nested_values;
-        graph.vertical_lines = vertical_lines;
         graph.svg = svg;
         graph.scaleX = scaleX;
 
@@ -307,6 +305,317 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 
 },{}],2:[function(require,module,exports){
+    /**
+     * Takes an array of values and gets the mean
+     * @param {array} values
+     * @returns {nm$_index.sum|Number|nm$_index.mean}
+     */
+    get_mean_value = function (values) {
+        sum = 0;
+        for (i in values) {
+            sum += values[i];
+        }
+        mean = sum / values.length;
+        return mean;
+    };
+ 
+  /**
+     * Note the divisor param is only used in the box_plot and bar graph to make sure the 
+     * line is centered
+     * @param {int in px} stroke_width
+     * @param {int} x_buffer x value scaled to day position
+     * @param {int} box_width length of the line
+     * @param {int} y_value unscaled expression value
+     * @param {svg} svg
+     * @param {scale function} scaleY
+     * @param {string} colour
+     * @param {int} box_width_wiskers
+     * @returns {unresolved}
+     */
+    add_line_to_box = function (stroke_width, x_buffer, box_width, y_value, svg, scaleY, colour, box_width_wiskers, divisor, multiplier) {
+        svg.append("line")
+                .attr("x1", (x_buffer - box_width/divisor) + box_width_wiskers)
+                .attr("x2", (x_buffer + box_width * multiplier) - box_width_wiskers)
+                .attr("y1", scaleY(y_value))
+                .attr("y2", scaleY(y_value))
+                .attr("shape-rendering", "crispEdges")
+                .attr("stroke-width", stroke_width)
+                .attr("stroke", colour);
+        return svg;
+    };
+/**
+ * 
+ * @param {int} stroke_width
+ * @param {int} x_position x value scaled to day position
+ * @param {int} y_lower y_value unscaled expression value - max for the day
+ * and line group
+ * @param {int} y_upper y_value unscaled expression value - min for the day 
+ * and line group
+ * @param {type} svg
+ * @param {scale function} scaleY
+ * @param {string} colour_wiskers
+ * @returns {unresolved}
+ */
+    add_vertical_line_to_box = function (stroke_width, x_position, y_lower, y_upper, svg, scaleY, colour_wiskers) {
+        svg.append("line")
+                .attr("x1", x_position)
+                .attr("x2", x_position)
+                .attr("y1", scaleY(y_lower))
+                .attr("y2", scaleY(y_upper))
+                .attr("shape-rendering", "crispEdges")
+                .attr("stroke-width", stroke_width)
+                .attr("stroke", colour_wiskers);
+        return svg;
+    };
+
+    //setting up the line to append for each of the values (i.e. line between scatter points)
+    //http://bl.ocks.org/d3noob/e99a762017060ce81c76 helpful for nesting the probes
+    
+    /**
+     * Adds a line between two of the scatter points
+     * @param {type} svg
+     * @param {string} colour
+     * @param {int} x1
+     * @param {int} x2
+     * @param {int} y1
+     * @param {int} y2
+     * @param {int} line_stroke_width
+     * @returns {unresolved}
+     */
+    add_scatter_line = function (svg, colour, x1, x2, y1, y2, line_stroke_width) {
+        svg.append("line")
+                .attr("x1", x1)
+                .attr("x2", x2)
+                .attr("y1", y1)
+                .attr("y2", y2)
+                .attr("shape-rendering", "crispEdges")
+                .attr("stroke-width", line_stroke_width)
+                .attr("stroke", colour);
+        return svg;
+    };//end  setup_scatter_line
+
+
+  /**
+     * Takes an array of the samples for a specific sample type
+     * These have been ordered already
+     * @param {array} values
+     * @returns {Array}
+     */
+    calculate_error_bars = function (values) {
+        var mean = get_mean_value(values);
+        sum = 0;
+        numbers_meaned = [];
+        x = null;
+        for (x in values) {
+            numbers_meaned.push(Math.abs(values[x] - mean));
+        }
+        standard_deviation = get_mean_value(numbers_meaned);
+        return [mean - standard_deviation, mean, mean + standard_deviation];
+    };
+
+    make_scatter_tooltip = function (probe, line_group, sample_type, sample_ids, type) {
+        var tooltip_scatter = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([0, +110])
+                .html(function (d) {
+                    temp =
+                            "Probe: " + probe + "<br/>" +
+                            "Line Group: " + line_group + "<br/>" +
+                            type + sample_type + "<br/>" +
+                            "Samples: " + sample_ids + "<br/>";
+                    return temp;
+                });
+        return tooltip_scatter;
+    };
+  
+    /**
+     * Test function
+     * @param {type} name
+     * @param {type} box_plot_vals
+     * @param {type} graph
+     * @param {type} options
+     * @returns {undefined}
+     */
+    test_values = function (name, box_plot_vals, graph, options) {
+        //var fs = require('fs');
+        //name in format as saved by stemformatics: name, average. standard deviation, min, max, median, Q1, Q3
+        row = name + "," + 0 + "," + 0 + "," + box_plot_vals[0] + "," + box_plot_vals[4] + "," + box_plot_vals[2] + "," + box_plot_vals[1] + "," + box_plot_vals[3];
+        if (options.bar_graph === "yes") {
+            row = name + "," + box_plot_vals[1] + "," + 0 + "," + box_plot_vals[0] + "," + box_plot_vals[2] + "," + 0 + "," + 0 + "," + 0;
+        }
+    };
+
+
+   /**
+     * Calculates interval between the probes
+     * also used for calculating the distance bwteen the day states
+     * @param {type} graph
+     * @returns {unresolved}
+     */
+    calculate_x_value_of_probes = function (graph) {
+        options = graph.options;
+        width = options.width;
+        scaleX = graph.scaleX;
+        probe_count = options.probe_count;
+        section_size = (width / probe_count);
+        //graph.size_of_day_state_collumn = section_size;
+	graph_element = section_size;
+        graph.size_of_probe_collumn = section_size;
+        return graph;
+    };// calculate_x_value_of_probes
+
+
+    /**
+     * Calculates interval between the day states/ or another type 
+     * of separating factor (i.e. could be disease states etc)
+     * @param {type} graph
+     * @returns {unresolved}
+     */
+    calculate_x_value_of_state = function (graph, count) {
+        options = graph.options;
+        width = options.width;
+        probe_count = options.probe_count;
+        scaleX = graph.scaleX;
+        //day_state_count = options.day_count;
+        section_size = (width / probe_count) / count; //day_state_count;
+        //graph.size_of_day_state_collumn = section_size;
+	//graph_element = section_size;
+        return section_size;
+    }; // calculate_x_value_of_probes
+
+
+/* Adds disease state labels to the bottom of the graph these are before the probe*/
+    setup_disease_state_labels = function (graph) {
+        svg = graph.svg;
+        scaleX = graph.scaleX;
+        sample_id_list = graph.sample_id_list;
+        nested_values = graph.nested_values;
+        page_options = graph.page_options;
+        options = graph.options;
+        initial_padding = graph.page_options.width_to_support_many_samples;
+        //Below are used for calculating the positioning of the labels
+        size_of_disease_state_collumn = graph.size_of_disease_state_collumn;
+        full_size_of_a_probe_collumn = graph.size_of_probe_collumn;
+        count = 0;
+        disease = null;
+        for (probe in vertical_lines) {
+            padding = (initial_padding * parseInt(probe) * 2) + (full_size_of_a_probe_collumn * parseInt(probe));
+            probe = vertical_lines[probe];
+            disease_state_list = probe.disease_state_list;
+            count = 0;
+            for (disease in disease_state_list) {
+                current_state = disease_state_list[disease];
+                svg.append("text") // when rotating the text and the size
+                        .text(current_state)
+                        .attr("class", "x_axis_diagonal_labels")
+                        .style("text-anchor", "end")
+                        // Even though we are rotating the text and using the cx and the cy, we need to 
+                        // specify the original y and x  
+                        .attr("y", page_options.height)
+                        .attr("x", function () {
+                            x = padding + (size_of_disease_state_collumn * (parseInt(disease) + 1));
+                            if (vertical_lines.length === 1) {
+                                x = padding + (size_of_disease_state_collumn * (parseInt(disease) + 1)) - (size_of_disease_state_collumn / 2) + (size_of_disease_state_collumn * 0.15);
+                            }
+                            return x;
+                        })
+                        // when rotating the text and the size
+                        .style("font-family", options.font_style)
+                        .style("font-size", options.text_size)
+                        .attr("transform", function () {
+                            // actual x value if there was no rotation
+                            x_value = padding + (size_of_disease_state_collumn * (parseInt(disease) + 1)) + (0.2 * graph.size_of_disease_state_collumn);
+                            // actual y value if there was no rotation
+                            if (vertical_lines.length === 1) {
+                                x_value = padding + (size_of_disease_state_collumn * (parseInt(disease) + 1)) - (size_of_disease_state_collumn / 2) + (size_of_disease_state_collumn * 0.15);
+                            }
+                            y_value = page_options.height + options.x_axis_padding;
+                            return "rotate(" + options.x_axis_text_angle + "," + x_value + "," + y_value + ")";
+                        }
+                        );
+                count++;
+            }
+        }
+
+        graph.svg = svg;
+        return graph;
+    };
+
+
+
+
+
+    /* // combination of this: http://stackoverflow.com/questions/11252753/rotate-x-axis-text-in-d3
+     // and this: http://www.w3.org/TR/SVG/coords.html#TransformAttribute
+     // basically, you just have to specify the angle of the rotation and you have
+     // additional cx and cy points that you can use as the origin.
+     // therefore you make cx and cy your actual points on the graph as if it was 0 angle change
+     // you still need to make the y and x set as above*/
+
+    setup_extra_labels = function (graph, scale_x, probe_num) {
+        svg = graph.svg;
+        scaleX = graph.scaleX;
+        page_options = graph.page_options;
+        options = graph.options;
+        y_val = options.height + 10;
+        //Below are used for calculating the positioning of the labels
+        size_of_probe_collumn = graph.size_of_probe_collumn / options.data.length;
+        padding = 2 * page_options.width_to_support_many_samples;
+        sort_by_sample_id = options.sort_by_sample_id;
+
+        svg.selectAll(".sample_type_text")
+                .data(options.data).enter()
+                .append("text") // when rotating the text and the size
+                .text(function (d) {
+                    // If the user does't want to have labels on the x axis we don't append the probe
+                    if (sort_by_sample_id === "no") {
+                        return get_state_type(d);
+                    } else {
+                        return d.Sample_ID;
+                    }
+                })
+                        /*combination of this: http://stackoverflow.com/questions/11252753/rotate-x-axis-text-in-d3
+                         and this: http://www.w3.org/TR/SVG/coords.html#TransformAttribute
+                         basically, you just have to specify the angle of the rotation and you have
+                         additional cx and cy points that you can use as the origin.
+                         therefore you make cx and cy your actual points on the graph as if it was 0 angle change
+                         you still need to make the y and x set as above */
+                .attr("class", "x_axis_diagonal_labels")
+                .style("text-anchor", "end")
+                // Even though we are rotating the text and using the cx and the cy, we need to 
+                // specify the original y and x  
+                .attr("y", page_options.height + options.x_axis_label_padding)
+                .attr("x",
+                        function (d) {
+                            if (sort_by_sample_id === "no") {
+                                x_value = scale_x(get_state_type(d)) + (size_of_probe_collumn);
+                            } else {
+                                x_value = scale_x(d.Sample_ID);
+                            }
+                            return x_value;
+                        }
+                ) // when rotating the text and the size
+                .style("font-family", options.font_style)
+                .style("font-size", options.text_size)
+                .attr("transform",
+                        function (d, i) {
+                            // actual x value if there was no rotation
+                            if (sort_by_sample_id === "no") {
+                                x_value = scale_x(get_state_type(d)) + (size_of_probe_collumn);
+                            } else {
+                                x_value = scale_x(d.Sample_ID);
+                            }
+                            y_value = y_val;
+                            return "rotate(" + options.x_axis_text_angle + "," + x_value + "," + y_value + ")";
+                        }
+                );
+        graph.svg = svg;
+        return graph;
+    };
+
+
+
+},{}],3:[function(require,module,exports){
 
     /**
      * sets up bars under the graph so that when the user hovers the mouse above it
@@ -586,7 +895,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     }; // end setup_error_bars
 
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 
     /* this is just to define the options as defaults: added numberFormat*/
     default_options = function () {
@@ -650,16 +959,28 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
         page_options.horizontal_grid_lines = options.horizontal_grid_lines;
         page_options.full_width = options.width + options.margin.left + options.margin.right;
         page_options.full_height = options.height + options.margin.top + options.margin.bottom;
-	if (graph.graph_type == "Box Plot") {
-        width_to_support_many_samples = 0;
-        if (options.num_sample_types * options.box_width * 2 > options.width) {
-            //Here we are compensating for any overflow that may occur due to many samples
-            width_to_support_many_samples = options.box_width * 3;
+        if (graph.graph_type == "Box Plot" || graph.graph_type == "Line Graph") {
+            width_to_support_many_samples = 0;
+            if (options.num_sample_types * options.box_width * 2 > options.width) {
+                //Here we are compensating for any overflow that may occur due to many samples
+                width_to_support_many_samples = options.box_width * 3;
+            }
+            page_options.width_to_support_many_samples = width_to_support_many_samples / 2;
+            page_options.width = (width_to_support_many_samples * options.probe_count) + options.width;
+            graph.page_options = page_options;
         }
-        page_options.width_to_support_many_samples = width_to_support_many_samples / 2;
-        page_options.width = (width_to_support_many_samples * options.probe_count) + options.width;
-        graph.page_options = page_options;
-	}
+        if (graph.graph_type == "Line Graph") {
+            if (options.num_line_groups * options.box_width * 2 > options.width) {
+                //Here we are compensating for any overflow that may occur due to many samples
+                width_to_support_many_samples = options.box_width * 3;
+            }
+        }
+        if (graph.graph_type == "Violin Plot") {
+            if (options.num_line_groups * options.box_width * 2 > options.width) {
+                //Here we are compensating for any overflow that may occur due to many samples
+                width_to_support_many_samples = options.box_width * 3;
+            }
+        }
         graph.page_options = page_options;
         return graph;
 
@@ -928,6 +1249,22 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     }; // //setup_vertical_lines
 
 
+    /* Makes the tooltuip for the legend */
+    make_legend_tooltip = function () {
+        var tooltip_legend = d3.tip()
+                .attr('class', 'd3-tip')
+                .html(function (d) {
+                    temp =
+                            d + "<br/>";
+                    return temp;
+                });
+        return tooltip_legend;
+    };
+
+
+
+
+
 
     /* http://bl.ocks.org/ZJONSSON/3918369 and http://zeroviscosity.com/d3-js-step-by-step/step-1-a-basic-pie-chart
      Interactive legend which allows you to display and not display the legend*/
@@ -937,7 +1274,18 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
         options = graph.options;
         var legendRectSize = options.legend_rect_size;
         page_options = graph.page_options;
-
+	if (options.show_legend_tooltip !== "no") {
+            tooltip_legend = make_legend_tooltip();
+            if (tooltip_legend !== null) {
+                svg.call(tooltip_legend);
+            }
+        } else {
+	    // tip which is displayed when hovering over a collumn. Displays the sample type 
+	    //of the collumn
+	    var tip_decoy = d3.tip()
+    	    .attr('class', 'd3-tip');
+                tooltip_legend = tip_decoy;
+        }
         //Add a legend title
         svg.append("text")
                 .attr("x", page_options.width + options.legend_padding)//options.x_middle_title)
@@ -962,6 +1310,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                 });
 
 
+
         //Add the legend to the svg element
         var legend = svg.selectAll('.legend')
                 .data(legend_data) //options.probs contains the name and colour of the probes
@@ -974,7 +1323,9 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                     var horizontal = -2 * legendRectSize + page_options.width + options.legend_padding;
                     var vertical = i * height - offset;
                     return 'translate(' + horizontal + ',' + vertical + ')';
-                });
+                })
+                .on('mouseover', tooltip_legend.show)
+                .on('mouseout', tooltip_legend.hide);
 
         var id = null;
         //Add legend squares
@@ -1044,7 +1395,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 
     /**
      * This is the start of an automatic test which simply runs to check that
@@ -1289,11 +1640,10 @@ var test = require('./test.js');
 var general_setup = require('./general.js');
 var axis = require('./axis.js');
 var features = require('./features.js');
-
+var barlinebox = require('./box_bar_line.js');
 
 module.exports = biojsvisboxplot = function (init_options)
 {
-
 
     /*
      This includes:
@@ -1439,145 +1789,7 @@ module.exports = biojsvisboxplot = function (init_options)
     };
 
 
-    setup_x_axis = function (graph) {
-        page_options = graph.page_options;
-        svg = graph.svg;
-        options = graph.options;
-        probe_list = graph.probe_list;
-
-        /* http://bost.ocks.org/mike/bar/3/
-         - Probes along the bottom we use ordinal instead of linear
-         - See here for more: https://github.com/mbostock/d3/wiki/Ordinal-Scales
-         - rangePoints gives greatest accuracy (first to the last point)
-         - Padding is set as a factor of the interval size (i.e. outer padidng = 1/2 
-         dist between two samples) 1 = 1/2 interval distance on the outside
-         2 = 1 interval dist on the outside. Have set the default to 2 */
-        var scaleX = d3.scale.linear()
-                .range([0, page_options.width]);
-        /*
-         http://stackoverflow.com/questions/15713955/d3-ordinal-x-axis-change-label-order-and-shift-data-position
-         The order of values for ordinal scales is the order in which you give them to .domain(). 
-         That is, simply pass the order you want to .domain() and it should just work. */
-        scaleX.domain(probe_list);
-        // setup the xaxis. this is later called when appending as a group .append("g")
-        // Note that it uses the x to work out what it should output
-        var xAxis = d3.svg.axis()
-                .scale(scaleX)
-                .tickSize(0)
-                .orient("bottom");
-
-        font_size = "0px"; // set this to 0 if you don't want sample_id as the labels on the x axis
-        svg.append("g")
-                .attr("class", "x_axis")
-                .attr("transform", "translate(0," + page_options.height + ")")
-                .call(xAxis)// this is actually implementing the xAxis as an axis itself
-                .selectAll("text")  // text for the xaxes - remember they are on a slant 
-                .attr("dx", "-2em") // when rotating the text and the size
-                .style("font-size", font_size)
-                .style("text-anchor", "end")
-                .attr("dy", "-0.1em")
-                .attr("transform", function (d) {
-                    return "rotate(-65)"; // this is rotating the text 
-                })
-                .append("text") // main x axis title
-                .attr("class", "label")
-                .attr("x", page_options.width)
-                .attr("y", +24)
-                .style("text-anchor", "end")
-                .text(options.x_axis_title);
-
-        graph.probe_list = probe_list;
-        graph.svg = svg;
-        graph.scaleX = scaleX;
-        return graph;
-    }; //end  setup_x_axis
-
-
-    /* Calculates interval between the probes
-     * also used for calculating the distance bwteen the disease states 
-     */
-    calculate_x_value_of_probes = function (graph) {
-        options = graph.options;
-        width = options.width;
-        scaleX = graph.scaleX;
-        probe_count = graph.probe_count;
-        section_size = (width / probe_count);
-        graph.size_of_disease_state_collumn = section_size;
-        graph.size_of_probe_collumn = section_size;
-        return graph;
-    }; // calculate_x_value_of_probes
-
-
-    /* Calculates interval between the probes
-     * also used for calculating the distance bwteen the disease states 
-     */
-    calculate_x_value_of_disease_state = function (graph) {
-        options = graph.options;
-        width = options.width;
-        probe_count = graph.probe_count;
-        scaleX = graph.scaleX;
-        disease_state_count = graph.disease_state_count;
-        section_size = (width / probe_count) / disease_state_count;
-        graph.size_of_disease_state_collumn = section_size;
-        return graph;
-    }; // calculate_x_value_of_probes
-
-    /* Adds disease state labels to the bottom of the graph these are before the probe*/
-    setup_disease_state_labels = function (graph) {
-        svg = graph.svg;
-        scaleX = graph.scaleX;
-        sample_id_list = graph.sample_id_list;
-        nested_values = graph.nested_values;
-        page_options = graph.page_options;
-        options = graph.options;
-        initial_padding = graph.page_options.width_to_support_many_samples;
-        //Below are used for calculating the positioning of the labels
-        size_of_disease_state_collumn = graph.size_of_disease_state_collumn;
-        full_size_of_a_probe_collumn = graph.size_of_probe_collumn;
-        count = 0;
-        disease = null;
-        for (probe in vertical_lines) {
-            padding = (initial_padding * parseInt(probe) * 2) + (full_size_of_a_probe_collumn * parseInt(probe));
-            probe = vertical_lines[probe];
-            disease_state_list = probe.disease_state_list;
-            count = 0;
-            for (disease in disease_state_list) {
-                current_state = disease_state_list[disease];
-                svg.append("text") // when rotating the text and the size
-                        .text(current_state)
-                        .attr("class", "x_axis_diagonal_labels")
-                        .style("text-anchor", "end")
-                        // Even though we are rotating the text and using the cx and the cy, we need to 
-                        // specify the original y and x  
-                        .attr("y", page_options.height)
-                        .attr("x", function () {
-                            x = padding + (size_of_disease_state_collumn * (parseInt(disease) + 1));
-                            if (vertical_lines.length === 1) {
-                                x = padding + (size_of_disease_state_collumn * (parseInt(disease) + 1)) - (size_of_disease_state_collumn / 2) + (size_of_disease_state_collumn * 0.15);
-                            }
-                            return x;
-                        })
-                        // when rotating the text and the size
-                        .style("font-family", options.font_style)
-                        .style("font-size", options.text_size)
-                        .attr("transform", function () {
-                            // actual x value if there was no rotation
-                            x_value = padding + (size_of_disease_state_collumn * (parseInt(disease) + 1)) + (0.2 * graph.size_of_disease_state_collumn);
-                            // actual y value if there was no rotation
-                            if (vertical_lines.length === 1) {
-                                x_value = padding + (size_of_disease_state_collumn * (parseInt(disease) + 1)) - (size_of_disease_state_collumn / 2) + (size_of_disease_state_collumn * 0.15);
-                            }
-                            y_value = page_options.height + options.x_axis_padding;
-                            return "rotate(" + options.x_axis_text_angle + "," + x_value + "," + y_value + ")";
-                        }
-                        );
-                count++;
-            }
-        }
-
-        graph.svg = svg;
-        return graph;
-    };
+   
 
     /*------------------------------Box plot Calculations--------------------------------------*/
     /* Sets up the box plot */
@@ -1709,9 +1921,8 @@ module.exports = biojsvisboxplot = function (init_options)
 
     /* Draw box plot draws the box and wiskers onto the graph and also if it is a bar graph this is drawn on too */
     draw_box_plot = function (samples, graph, box_plot_vals, probe, disease_state, sample_type, number_sample_types, probe_name, sample_type_name, disease_state_name) {
-        console.log(probe);
-        console.log(disease_state);
-        console.log(samples.length);
+	var divisor = 2;
+	var multiplier = 1.5;// (used for making sure the line is centered)
         svg = graph.svg;
         scaleY = graph.scaleY;
         scaleX = graph.scaleX;
@@ -1790,21 +2001,21 @@ module.exports = biojsvisboxplot = function (init_options)
         //Add min line
         if (options.bar_graph === "yes") {
             //Add min line
-            svg = add_line_to_box(options.stroke_width, x_buffer + box_width / 4, box_width / 2, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers / 2);
+            svg = add_line_to_box(options.stroke_width, x_buffer + box_width / 4, box_width / 2, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers / 2, divisor, multiplier);
             //Add max line
-            svg = add_line_to_box(options.stroke_width, x_buffer + box_width / 4, box_width / 2, box_plot_vals[2], svg, scaleY, colour_wiskers, box_width_wiskers / 2);
+            svg = add_line_to_box(options.stroke_width, x_buffer + box_width / 4, box_width / 2, box_plot_vals[2], svg, scaleY, colour_wiskers, box_width_wiskers / 2,divisor, multiplier);
             //Add median lines
-            svg = add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[1], svg, scaleY, colour_wiskers, box_width_wiskers);
+            svg = add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[1], svg, scaleY, colour_wiskers, box_width_wiskers, divisor, multiplier);
             //Add outside lines
             svg = add_vertical_line_to_box(options.stroke_width, x_buffer, 0, box_plot_vals[1], svg, scaleY, colour_wiskers);
             svg = add_vertical_line_to_box(options.stroke_width, x_buffer + box_width, 0, box_plot_vals[1], svg, scaleY, colour_wiskers);
         } else {
             //Add max line
-            svg = add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers);
+            svg = add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers, divisor, multiplier);
             //Add median line
-            svg = add_line_to_box(options.stroke_width, x_buffer + box_width * .25, box_width * 0.5, box_plot_vals[2], svg, scaleY, colour_median, 0);
+            svg = add_line_to_box(options.stroke_width, x_buffer + box_width * .25, box_width * 0.5, box_plot_vals[2], svg, scaleY, colour_median, 0 ,divisor, multiplier);
             //Add max line
-            svg = add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[4], svg, scaleY, colour_wiskers, box_width_wiskers);
+            svg = add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[4], svg, scaleY, colour_wiskers, box_width_wiskers,divisor, multiplier);
         }
         //Option to allow the user to test their values
         if (options.test === "yes") {
@@ -1859,35 +2070,8 @@ module.exports = biojsvisboxplot = function (init_options)
     };
 
 
-    /* A small function to test the values from the computed values
-     * Checks values from graphs downloaded from stemformatics */
-    test_values = function (name, box_plot_vals, graph, options) {
-        //var fs = require('fs');
-        //name in format as saved by stemformatics: name, average. standard deviation, min, max, median, Q1, Q3
-        row = name + "," + 0 + "," + 0 + "," + box_plot_vals[0] + "," + box_plot_vals[4] + "," + box_plot_vals[2] + "," + box_plot_vals[1] + "," + box_plot_vals[3];
-        if (options.bar_graph === "yes") {
-            row = name + "," + box_plot_vals[1] + "," + 0 + "," + box_plot_vals[0] + "," + box_plot_vals[2] + "," + 0 + "," + 0 + "," + 0;
-        }
-        //console.log(row);
-        /*fs.writeFile(options.test_path, row, function(err) {
-         if(err) {
-         return console.log(err);
-         }
-         console.log("The file was saved!");
-         }); */
-    };
 
-    get_mean_value = function (values) {
-        sum = 0;
-        for (i in values) {
-            sum += values[i];
-        }
-        mean = sum / values.length;
-        return mean;
-    };
-
-
-    add_line_to_box = function (stroke_width, x_buffer, box_width, y_value, svg, scaleY, colour, box_width_wiskers) {
+    add_line_to_box1 = function (stroke_width, x_buffer, box_width, y_value, svg, scaleY, colour, box_width_wiskers) {
         svg.append("line")
                 .attr("x1", (x_buffer - box_width / 2) + box_width_wiskers)
                 .attr("x2", (x_buffer + box_width * 1.5) - box_width_wiskers)
@@ -1899,17 +2083,7 @@ module.exports = biojsvisboxplot = function (init_options)
         return svg;
     };
 
-    add_vertical_line_to_box = function (stroke_width, x_position, y_lower, y_upper, svg, scaleY, colour_wiskers) {
-        svg.append("line")
-                .attr("x1", x_position)
-                .attr("x2", x_position)
-                .attr("y1", scaleY(y_lower))
-                .attr("y2", scaleY(y_upper))
-                .attr("shape-rendering", "crispEdges")
-                .attr("stroke-width", stroke_width)
-                .attr("stroke", colour_wiskers);
-        return svg;
-    };
+
     /* Takes the array of samples for a specific sample type
      * already ordered */
     calculate_box_plot_vals_bar = function (values) {
@@ -2016,125 +2190,6 @@ module.exports = biojsvisboxplot = function (init_options)
 
     /*------------------------End of box plot calculations -----------------------------------*/
 
-    /* Adds probe labels to the bottom of the graph */
-    setup_probe_labels = function (graph) {
-        svg = graph.svg;
-        scaleX = graph.scaleX;
-        sample_id_list = graph.sample_id_list;
-        vertical_lines = graph.vertical_lines;
-        page_options = graph.page_options;
-        options = graph.options;
-        //Below are used for calculating the positioning of the labels
-        size_of_probe_collumn = graph.size_of_probe_collumn;
-        padding = 2 * page_options.width_to_support_many_samples;
-        if (vertical_lines.length === 1 && options.include_disease_state_x_axis === "yes") {
-            size_of_probe_collumn = 0.75 * size_of_probe_collumn;
-        }
-        svg.selectAll(".probe_text")
-                .data(vertical_lines).enter()
-                .append("text") // when rotating the text and the size
-                .text(function (d) {
-                    // If the user does't want to have labels on the x axis we don't append the probe
-                    return d.probe;
-                })
-                .attr("class", "x_axis_diagonal_labels")
-                .style("text-anchor", "end")
-                /* Even though we are rotating the text and using the cx and the cy, we need to 
-                 // specify the original y and x */
-                .attr("y", page_options.height + options.x_axis_label_padding)
-                .attr("x",
-                        function (d, i) {
-                            x_value = (padding * (i + 1)) + (size_of_probe_collumn * (i + 1));
-                            if (options.include_disease_state_x_axis !== "yes") {
-                                x_value = x_value - (0.5 * size_of_probe_collumn);
-                            }
-                            return x_value;
-                        }
-                ) // when rotating the text and the size
-                .style("font-family", options.font_style)
-                .style("font-size", options.text_size)
-                .attr("transform",
-                        /* combination of this: http://stackoverflow.com/questions/11252753/rotate-x-axis-text-in-d3
-                         and this: http://www.w3.org/TR/SVG/coords.html#TransformAttribute
-                         basically, you just have to specify the angle of the rotation and you have
-                         additional cx and cy points that you can use as the origin.
-                         therefore you make cx and cy your actual points on the graph as if it was 0 angle change
-                         you still need to make the y and x set as above*/
-                        function (d, i) {
-                            // actual x value if there was no rotation
-                            x_value = (padding * (i + 1)) + (size_of_probe_collumn * (i + 1));
-                            // actual y value if there was no rotation
-                            if (options.include_disease_state_x_axis === "yes") {
-                                y_value = page_options.height + options.size_of_disease_state_labels;
-                            } else {
-                                x_value = x_value - (0.5 * size_of_probe_collumn) + (padding * (i + 1));
-                                y_value = page_options.height + 10;
-                            }
-                            return "rotate(" + options.x_axis_text_angle + "," + x_value + "," + y_value + ")";
-                        }
-                );
-        graph.svg = svg;
-        return graph;
-    };
-
-    /* sets up the vertical lines between the sample points */
-    setup_vertical_lines_specific = function (graph) {
-        svg = graph.svg;
-        vertical_lines = graph.vertical_lines;
-        sample_id_list = graph.sample_id_list;
-        page_options = graph.page_options;
-        padding = (2 * page_options.width_to_support_many_samples);
-        size_of_probe_collumn = graph.size_of_probe_collumn;
-        for (i = 0; i < options.probe_count; i++) {
-            svg.append("line")
-                    .attr("x1",
-                            function (d) {
-                                avg = (padding + size_of_probe_collumn) * (i + 1); //returns the position for the line
-                                return avg;
-                            }
-                    )
-                    .attr("x2",
-                            function (d) {
-                                avg = (padding + size_of_probe_collumn) * (i + 1); //returns the position for the line
-                                return avg;
-                            }
-                    )
-                    .attr("y1",
-                            function (d) {
-                                temp = 0;
-                                return temp;
-                            }
-                    )
-                    .attr("y2",
-                            function (d) {
-                                // this is to keep it within the graph
-                                temp = page_options.height;
-                                return temp;
-                            }
-                    )
-                    .attr("shape-rendering", "crispEdges")
-                    .attr("stroke-width", options.line_stroke_width)
-                    .attr("opacity", "0.2")
-                    .attr("stroke", "black");
-        }
-        graph.svg = svg;
-        return graph;
-    }; // //setup_vertical_lines 
-
-
-
-    make_legend_tooltip = function () {
-        var tooltip_legend = d3.tip()
-                .attr('class', 'd3-tip')
-                .html(function (d) {
-                    temp =
-                            d + "<br/>";
-                    return temp;
-                });
-        return tooltip_legend;
-    };
-
-
     /**
      * gets a particular type -> this is used to mae the code more modular
      * Allows us to have probes as main type and samples for others
@@ -2144,24 +2199,6 @@ module.exports = biojsvisboxplot = function (init_options)
     }
 
 
-                       /* combination of this: http://stackoverflow.com/questions/11252753/rotate-x-axis-text-in-d3
-                         and this: http://www.w3.org/TR/SVG/coords.html#TransformAttribute
-                         basically, you just have to specify the angle of the rotation and you have
-                         additional cx and cy points that you can use as the origin.
-                         therefore you make cx and cy your actual points on the graph as if it was 0 angle change
-                         you still need to make the y and x set as above*/
-                        /*function (d, i) {
-                            // actual x value if there was no rotation
-                            x_value = (padding * (i + 1)) + (size_of_probe_collumn * (i + 1));
-                            // actual y value if there was no rotation
-                            if (options.include_disease_state_x_axis === "yes") {
-                                y_value = page_options.height + options.size_of_disease_state_labels;
-                            } else {
-                                x_value = x_value - (0.5 * size_of_probe_collumn) + (padding * (i + 1));
-                                y_value = page_options.height + 10;
-                            }
-                            return "rotate(" + options.x_axis_text_angle + "," + x_value + "," + y_value + ")";
-                        }*/
 
     /* This is used for calculating the size of the interval between the scatter points
      i.e. for setting up the vertical lines */
@@ -2229,9 +2266,9 @@ i , graph) {
         }
         graph = setup_data_for_x_axis(graph);
         graph = setup_x_axis(graph, graph.probe_list);
-        graph = calculate_x_value_of_probes(graph);
+        graph.size_of_disease_state_collumn = calculate_x_value_of_probes(graph);
         if (options.include_disease_state_x_axis === "yes") {
-            graph = calculate_x_value_of_disease_state(graph);
+            graph.size_of_disease_state_collumn = calculate_x_value_of_state(graph, graph.disease_state_count);
             graph = setup_disease_state_labels(graph);
         }
         if (graph.options.include_disease_state_x_axis !== "yes") {
@@ -2272,4 +2309,4 @@ i , graph) {
     init(init_options);
 };
 
-},{"./axis.js":1,"./features.js":2,"./general.js":3,"./test.js":4}]},{},[]);
+},{"./axis.js":1,"./box_bar_line.js":2,"./features.js":3,"./general.js":4,"./test.js":5}]},{},[]);
