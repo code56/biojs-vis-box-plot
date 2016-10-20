@@ -1,5 +1,5 @@
 // if you don't specify a html file, the sniper will generate a div with id "rootDiv"
-var app = require("biojs-vis-box-plot");
+var app = require("biojs-vis-scatter-plot");
 function round_to_two_decimal_places(num){
     new_num = Math.round(num * 100) / 100;
     return new_num;
@@ -30,14 +30,18 @@ var tooltip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([0, +110])
     .html(function(d) {
-       temp = 
+        probe = d.Probe;
+        // 2 decimal places on the display only
+        Expression_Value = round_to_two_decimal_places(d[y_column]);
+        lwr = round_to_two_decimal_places(d.Expression_Value - d.Standard_Deviation);
+        upr = round_to_two_decimal_places(d.Expression_Value + d.Standard_Deviation);
+        temp = 
             "Probe: " + d.Probe + "<br/>" +
-            "Sample: " + d.Sample_Type +"<br/>"+
-            "Disease State: " + d.Disease_State + "<br/>"
-           console.log(temp);
+            "Sample: " + d.Sample_ID +"<br/>"+
+            "Log2 Expression: " + Expression_Value + " [" + lwr + ";" + upr +"]<br/>"
+           // "MSC predicted "+msc_call+"/"+total+" iterations<br/>"
         return temp; 
     });
-
 
 //The url's to the data displayed
 //data_url= '../data/ds_id_5003_scatter_gata3.tsv';
@@ -63,8 +67,6 @@ d3.tsv(data_url,function (error,data){
     sample_type_array = new Array();
     sample_type_count = 0;
     j = 0;
-    disease_states = [];
-    disease_state_names = "";
     //need to put in the number of colours that are being used (so that it
     //can reiitterate over them again if necesary
     number_of_colours = 39;
@@ -118,7 +120,7 @@ d3.tsv(data_url,function (error,data){
     probes = probes;
     sample_types = sample_types;
     probe_count = probe_count;
-    title = "Box Plot";
+    title = "Scatter Plot";
     subtitle1 = "Subtitle"
     subtitle2 = "Subtitle"
     target = rootDiv;
@@ -130,117 +132,94 @@ d3.tsv(data_url,function (error,data){
     if (width < 1000){
         width = 1000;
     }
-    //Need a name of all disease states for the sample type
-    for (disease in disease_states) {
-        disease_state_names = disease_states[disease] + " " + disease_state_names;
-    }
-    // this tooltip function is passed into the graph via the tooltip
-    var all_disease_tooltip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([0, +110])
-    .html(function(d) {
-       temp = 
-            "Probe: " + d.Probe + "<br/>" +
-            "Sample: " + d.Sample_Type +"<br/>"+
-            "Disease State: " + disease_state_names + "<br/>"
-           console.log(temp);
-        return temp;
-    });
-
 
     //The main options for the graph
     var options = {
-	jitter: "no",
-        test: "yes", //Only used to test the data -> outputs the values to a file on the computer
-        test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
-	bar_graph: "no",
-	/******** Options for Data order *****************************************/
-	// If no orders are given than the order is taken from the dataset
-	disease_state_order: "none", //Order of the disease state on the x axis
-	sample_type_order: "none", //Order of the sample types on the x axis
-	probe_order: "none",	//Order of the probes on the x axis
-	//Including the disease state on the x axis causes the order to change as the data becomes
-	//sorted by probes and disease state
-	include_disease_state_x_axis: "no", //Includes the disease state on the x axis
-	size_of_disease_state_labels: 200, //The size allotted to the disease state labels
-	x_axis_padding: 50,
-    	all_disease_tooltip: all_disease_tooltip, // using d3-tips
-	box_width: 10,
-	box_width_wiskers: 5,
-	/******** End Options for Data order *****************************************/    
-        /******** Options for Sizing *****************************************/
-        legend_padding: 50,
-        legend_rect_size: 20,
-	height: 200,
-        width: 300,
-        margin:{top: 50, left: 60, bottom: 500, right: 100},
-        initial_padding: 10,
-        x_axis_label_padding: 10,//padding for the x axis labels (how far below the graph)
-        text_size: "10px",
-        title_text_size: "12px",
-        increment: number_of_increments * 0.5, // To double the number of increments ( mutliply by 2, same for 
-        // reducing. Number of increments is how many numbers are displayed on the y axis. For none to
-        // be displayed multiply by 0
-        display: {hoverbars: "yes", error_bars: "yes", legend: "no", horizontal_lines: "yes", vertical_lines: "yes", x_axis_labels: "yes", y_axis_title: "yes", horizontal_grid_lines: "no"},
+            increment: 0.2,//number_of_increments * increment_value, // To double the number of increments ( mutliply by 2, same for
 
-        circle_radius: 2,  // for the scatter points
-        hover_circle_radius: 5,
-        background_colour: "white",
-        background_stroke_colour:  "black",
-        background_stroke_width:  "1px",
-        colour: colours,
-	font_style: "Arial",
-	grid_colour: "black",
-	grid_opacity: 0.5,
-	y_label_text_size: "14px",
-	y_label_x_val: 40,
-        data: data,
-        // eq. yes for x_axis labels indicates the user wants labels on the x axis (sample types)
-        // indicate yes or no to each of the display options below to choose which are displayed on the graph
-        domain_colours : ["#FFFFFF","#7f3f98"],
-        error_bar_width:3,
-	error_stroke_width: "1px",
-        error_dividor:100,//100 means error bars will not show when error < 1% value 
-        //horizontal lines takes a name, colour and the yvalue. If no colour is given one is chosen at random
-        horizontal_lines: [["Detection Threshold", "green", 5], ["Median", , 8.93]],
-        horizontal_line_value_column: 'value',
-        //to have horizontal grid lines = width (to span accross the grid), otherwise = 0
-        horizontal_grid_lines: width,
-        legend_class: "legend",
-        legend_range: [0,100],
-        line_stroke_width: "2px",
-	legend_text: "yes",
-	legend_shorten_text: "yes",
-	substring_legend_length: 15,
-    	show_legend_tooltip: "no",
-        legend_toggle_opacity: "no", 
-       //default number of colours iis 39 (before it reitterates over it again)
-        number_of_colours: 39,
-        //2 is the chosen padding. On either side there will be padding = to the interval between the points
-        //1 gives 1/2 the interval on either side etc.
-        padding: 2,
-        probe_count: probe_count,
-        probes: probes,
-        //sample type order indicates whether or not the samplese need to be represented in a specific order
-        //if no order is given then the order from the data set is taken
-        sample_type_order:"none",// "DermalFibroblast, hONS", // "BM MSC,BM erythropoietic cells CD235A+,BM granulopoietic cells CD11B+,BM hematopoietic cells CD45+,Developing cortex neural progenitor cells,Ventral midbrain neural progenitor cells,Olfactory lamina propria derived stem cells",
-        sample_types: sample_types,
-        // Can fit 4 subtitles currently
-        subtitles: [subtitle1],
-        stroke_width:"3px",
-        target: target,
-        title: title,
-        title_class: "title",
-        tip: tip,//second tip to just display the sample type
-        tooltip: tooltip, // using d3-tips
-        //tooltip1: tooltip1, // using d3-tips unique_id: "chip_id",
-        watermark:"http://www1.stemformatics.org/img/logo.gif",
-        x_axis_text_angle:-45, 
-        x_axis_title: "Samples",
-        x_column: 'Sample_ID',
-        x_middle_title: 500,
-        y_axis_title: "Log2 Expression",
-        y_column: 'Expression_Value'
+	        // Ariane -> added options for anything which as global previously
+            ref_name: "legend",
+
+            // Ariane -> any options edited to get up and running
+
+            horizontal_lines: [["Detection Threshold ", "green", 8], ["Median ", "blue",
+6]],
+            sortByOption: "Sample_Type",//sortByOption, NEED TO CHANGE BACK FOR ISHA
+            show_min_y_axis: false,//show_min_y_axis,NEED TO CHANGE BACK FOR ISHA isha
+            sample_type_order: "DermalFibroblast, hONS", /*dataset_data["sampleTypeDisplayOrder"],// "DermalFibroblast, hONS", // "BM MSC,BM erythropoietic cells CD235A+,BM granulopoietic cells CD11B+,BM
+hematopoietic cells CD45+,Developing cortex neural progenitor cells,Ventral
+midbrain neural progenitor cells,Olfactory lamina propria derived stem
+cells",*/
+
+            /******** Options for Sizing *****************************************/
+            legend_padding: 100,
+            legend_rect_size: 20,
+    	      height: 400,
+            width: 400,//graph_box_width, ISHA
+            margin:{top: 50, left: 200, bottom: 300, right: 150},
+            initial_padding: 10,
+            x_axis_label_padding: 10,//padding for the x axis labels (how far below the graph)
+            text_size: "12px",
+            title_text_size: "16px",
+            // changes masde by isha to show horizontal and vertical lines
+            display: {hoverbars: "no", error_bars: "yes", legend: "yes", horizontal_lines: "yes", legend_hover: "no", vertical_lines: "yes", x_axis_labels: "yes", y_axis_title: "yes", horizontal_grid_lines: "yes"},
+
+            circle_radius: 2,  // for the scatter points
+            hover_circle_radius: 10,
+            /*********** End of sizing options **********************************/
+
+            background_colour: "white",
+            background_stroke_colour:  "black",
+            background_stroke_width:  "1px",
+            colour: colours,
+          	font_style: "Arial",
+          	grid_colour: "black",
+          	grid_opacity: 0.5,
+          	y_label_text_size: "14px",
+          	y_label_x_val: 40,
+            data: data,
+            sortByOption: "Sample_Type",//sortByOption, NEED TO CHANGE BACK FOR ISHA
+            show_min_y_axis: false,//show_min_y_axis,NEED TO CHANGE BACK FOR ISHA isha
+            // eq. yes for x_axis labels indicates the user wants labels on the x axis (sample types)
+            // indicate yes or no to each of the display options below to choose which are displayed on the graph
+            domain_colours : ["#FFFFFF","#7f3f98"],
+            error_bar_width:5,
+    	    error_stroke_width: "1px",
+            error_dividor:100,//100 means error bars will not show when error < 1% value
+            //horizontal lines takes a name, colour and the yvalue. If no colour is given one is chosen at random
+		    horizontal_line_value_column: 'value',
+            //to have horizontal grid lines = width (to span accross the grid), otherwise = 0
+            horizontal_grid_lines: width,
+            legend_class: "legend",
+            legend_range: [0,100],
+            line_stroke_width: "2px",
+           //default number of colours iis 39 (before it reitterates over it again)
+            number_of_colours: 39,
+            //2 is the chosen padding. On either side there will be padding = to the interval between the points
+            //1 gives 1/2 the interval on either side etc.
+            padding: 2,
+            probe_count: probe_count,
+            probes: probes,
+            //sample type order indicates whether or not the samplese need to be represented in a specific order
+            //if no order is given then the order from the data set is taken
+            disease_state_order: "none", //Order of the disease state on the x axis
+            sample_types: sample_types,
+            // Can fit 4 subtitles currently
+            subtitles: [subtitle1],
+            stroke_width:"3px",
+            target: target,
+            title: title,
+            title_class: "title",
+            tip: tip,//second tip to just display the sample type
+            tooltip: tooltip, // using d3-tips
+            //tooltip1: tooltip1, // using d3-tips unique_id: "chip_id",
+            watermark:"https://www.stemformatics.org/img/logo.gif",
+            x_axis_text_angle:-45,
+            x_axis_title: "Samples",
+            x_column: 'Sample_ID',
+            x_middle_title: 500,
+            y_axis_title: "log",//dataset_data["y_axis_label"], ISHA
+            y_column: 'Expression_Value'
     }
 
     var instance = new app(options);
