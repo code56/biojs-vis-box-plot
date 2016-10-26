@@ -150,7 +150,8 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
-
+        whiskers_needed: true,
+        barPlotOption: "no",
          increment: 0.2,//number_of_increments * increment_value, // To double the number of increments ( mutliply by 2, same for
 
 	        // Ariane -> added options for anything which as global previously
@@ -160,7 +161,7 @@ d3.tsv(data_url,function (error,data){
 
             horizontal_lines: [["Detection Threshold ", "green", 8], ["Median ", "blue",
 6]],
-            sortByOption: "Disease_state",//sortByOption, NEED TO CHANGE BACK FOR ISHA
+            sortByOption: "Sample_Type",//sortByOption, NEED TO CHANGE BACK FOR ISHA
             show_min_y_axis: false,//show_min_y_axis,NEED TO CHANGE BACK FOR ISHA isha
             sample_type_order: "DermalFibroblast, hONS", /*dataset_data["sampleTypeDisplayOrder"],// "DermalFibroblast, hONS", // "BM MSC,BM erythropoietic cells CD235A+,BM granulopoietic cells CD11B+,BM
 hematopoietic cells CD45+,Developing cortex neural progenitor cells,Ventral

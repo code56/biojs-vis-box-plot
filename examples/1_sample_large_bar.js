@@ -150,64 +150,106 @@ d3.tsv(data_url,function (error,data){
         return temp;
     });
 
-
+//------------------------------------------------
+   //Need a name of all disease states for the sample type
+    for (disease in disease_states) {
+        disease_state_names = disease_states[disease] + " " + disease_state_names;
+    }
+    // this tooltip function is passed into the graph via the tooltip
+    var all_disease_tooltip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([0, +110])
+    .html(function(d) {
+       temp =
+            "Probe: " + d.Probe + "<br/>" +
+            "Sample: " + d.Sample_Type +"<br/>"+
+            "Disease State: " + disease_state_names + "<br/>"
+           console.log(temp);
+        return temp;
+    });
+    unique_probes_sorted = new Array();
+    unique_probes_sorted.push("ILMN_1690105");
+    unique_probes_sorted.push("ILMN_1691364");
+    unique_probes_sorted.push("ILMN_1777325");
+    
     //The main options for the graph
     var options = {
-	jitter: "no",
-        test: "yes", //Only used to test the data -> outputs the values to a file on the computer
-        test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
-	bar_graph: "yes",
+        width: 900,//graph_box_width,
+        probe_order: unique_probes_sorted,	//Order of the probes on the x axis
+	draw_scatter_on_box: "yes",//scatter_needed,
+	increment: 10,//number_of_increments * increment_value, // To double the number of increments ( mutliply by 2, same for
+        // reducing. Number of increments is how many numbers are displayed on the y axis. For none to
+        // be displayed multiply by 0
+        sortByOption: "Disease_State,Sample_Type",
+        show_min_y_axis: false,//show_min_y_axis,
+        whiskers_needed : true,//whiskers_needed,
+	sample_type_order: "Dermal Fibroblast,hONS",//dataset_data["sampleTypeDisplayOrder"], //Order of the sample types on the x axis
+        bar_graph: "yes",//barPlotOption,
+	increment: 0.2,//number_of_increments * increment_value, // To double the number of increments ( mutliply by 2, same for
+
+	        // Ariane -> added options for anything which as global previously
+            ref_name: "legend",
+
+            // Ariane -> any options edited to get up and running
+
+            horizontal_lines: [["Detection Threshold ", "green", 8], ["Median ", "blue",
+6]],
+	
+	//-----------------------------------------------------
+
+	jitter: "yes",
+        test: "no", //Only used to test the data -> outputs the values to a file on the computer
+        test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name
+        // save as .csv file
+        /********   Options for Data order *****************************************/
+        // If no orders are given than the order is taken from the dataset
+
+        box_width: 50,
+        box_width_wiskers: 15,
+        disease_state_order: "no", //Order of the disease state on the x axis
+
+        //Including the disease state on the x axis causes the order to change as the data becomes
+        //sorted by probes and disease state
+        include_disease_state_x_axis: "no", //Includes the disease state on the x axis
+        size_of_disease_state_labels: 200, //The size allotted to the disease state labels
+        x_axis_padding: 50,
+    	all_disease_tooltip: all_disease_tooltip, // using d3-tips
+
+	radius: 3,
+	/******** End Options for Data order *****************************************/
         /******** Options for Sizing *****************************************/
-        legend_padding: 50,
+        legend_padding: 100,
         legend_rect_size: 20,
-	height: 400,
-        width: 600,
-        margin:{top: 50, left: 60, bottom: 500, right: 200},
+    	height: 400,
+
+        margin:{top: 50, left: 200, bottom: 300, right: 150},
         initial_padding: 10,
         x_axis_label_padding: 10,//padding for the x axis labels (how far below the graph)
         text_size: "12px",
         title_text_size: "16px",
-        increment: number_of_increments * 0.5, // To double the number of increments ( mutliply by 2, same for 
-        // reducing. Number of increments is how many numbers are displayed on the y axis. For none to
-        // be displayed multiply by 0
+        
         display: {hoverbars: "yes", error_bars: "yes", legend: "yes", horizontal_lines: "yes", vertical_lines: "yes", x_axis_labels: "yes", y_axis_title: "yes", horizontal_grid_lines: "yes"},
 
-        circle_radius: 4,  // for the scatter points
-        hover_circle_radius: 8,
+        circle_radius: 2,  // for the scatter points
+        hover_circle_radius: 10,
         /*********** End of sizing options **********************************/
-	/******** Options for Data order *****************************************/
-	// If no orders are given than the order is taken from the dataset
-	box_width: 50,
-	box_width_wiskers: 3,
-	disease_state_order: "none", //Order of the disease state on the x axis
-	sample_type_order: "none", //Order of the sample types on the x axis
-	probe_order: "none",	//Order of the probes on the x axis
-	//Including the disease state on the x axis causes the order to change as the data becomes
-	//sorted by probes and disease state
-	include_disease_state_x_axis: "yes", //Includes the disease state on the x axis
-	size_of_disease_state_labels: 200, //The size allotted to the disease state labels
-	x_axis_padding: 50,
-	draw_scatter_on_box: "yes",
-	radius: 3,
-	/******** End Options for Data order *****************************************/
         background_colour: "white",
         background_stroke_colour:  "black",
         background_stroke_width:  "1px",
         colour: colours,
-	font_style: "Arial",
-	grid_colour: "black",
-	grid_opacity: 0.5,
-	y_label_text_size: "14px",
-	y_label_x_val: 40,
+        font_style: "Arial",
+        grid_colour: "black",
+        grid_opacity: 0.5,
+        y_label_text_size: "14px",
+        y_label_x_val: 40,
         data: data,
         // eq. yes for x_axis labels indicates the user wants labels on the x axis (sample types)
         // indicate yes or no to each of the display options below to choose which are displayed on the graph
         domain_colours : ["#FFFFFF","#7f3f98"],
         error_bar_width:5,
 	error_stroke_width: "1px",
-        error_dividor:100,//100 means error bars will not show when error < 1% value 
+        error_dividor:100,//100 means error bars will not show when error < 1% value
         //horizontal lines takes a name, colour and the yvalue. If no colour is given one is chosen at random
-        horizontal_lines: [["Detection Threshold", "green", 5], ["Median", , 8.93]],
         horizontal_line_value_column: 'value',
         //to have horizontal grid lines = width (to span accross the grid), otherwise = 0
         horizontal_grid_lines: width,
@@ -215,10 +257,10 @@ d3.tsv(data_url,function (error,data){
         legend_range: [0,100],
         line_stroke_width: "2px",
 	legend_text: "yes",
-	legend_shorten_text: "yes",
-    	show_legend_tooltip: "no",
-        legend_toggle_opacity: "no", 
+	legend_shorten_text: "no",
 	substring_legend_length: 15,
+    	show_legend_tooltip: "no",
+        legend_toggle_opacity: "no",
        //default number of colours iis 39 (before it reitterates over it again)
         number_of_colours: 39,
         //2 is the chosen padding. On either side there will be padding = to the interval between the points
@@ -226,6 +268,9 @@ d3.tsv(data_url,function (error,data){
         padding: 2,
         probe_count: probe_count,
         probes: probes,
+        //sample type order indicates whether or not the samplese need to be represented in a specific order
+        //if no order is given then the order from the data set is taken
+        
         sample_types: sample_types,
         num_sample_types: sample_type_count,
         // Can fit 4 subtitles currently
@@ -238,15 +283,14 @@ d3.tsv(data_url,function (error,data){
         tip: tip,//second tip to just display the sample type
         tooltip: tooltip, // using d3-tips
         //tooltip1: tooltip1, // using d3-tips unique_id: "chip_id",
-        watermark:"http://www1.stemformatics.org/img/logo.gif",
-        x_axis_text_angle:-45, 
+        watermark:"https://www1.stemformatics.org/img/logo.gif",
+        x_axis_text_angle:-45,
         x_axis_title: "Samples",
         x_column: 'Sample_ID',
         x_middle_title: 500,
-        y_axis_title: "Log2 Expression",
+        y_axis_title: "Logarithmic scale",//dataset_data["y_axis_label"],
         y_column: 'Expression_Value'
     }
-
     var instance = new app(options);
 
     // Get the d3js SVG element
