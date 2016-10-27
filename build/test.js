@@ -379,11 +379,11 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                     .attr("stroke-width",stroke_width)
                     .attr("stroke", colour)
                     .on("mouseover", function() {
-			if (graph.graph_type = "Box Plot") {
+			if (graph.graph_type == "Box Plot") {
 				tooltip_box.show;
 			}})
                     .on("mouseout", function() {
-			if (graph.graph_type = "Box Plot") {
+			if (graph.graph_type == "Box Plot") {
 				tooltip_box.hide;
 			}});
           }
@@ -397,11 +397,11 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                     .attr("stroke-width",stroke_width)
                     .attr("stroke", colour)
                     .on("mouseover", function() {
-			if (graph.graph_type = "Box Plot") {
+			if (graph.graph_type == "Box Plot") {
 				tooltip_box.show;
 			}})
                     .on("mouseout", function() {
-			if (graph.graph_type = "Box Plot") {
+			if (graph.graph_type == "Box Plot") {
 				tooltip_box.hide;
 			}});
 		}
@@ -417,11 +417,11 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                   .attr("stroke-width",stroke_width)
                   .attr("stroke", colour)
                     .on("mouseover", function() {
-			if (graph.graph_type = "Box Plot") {
+			if (graph.graph_type == "Box Plot") {
 				tooltip_box.show;
 			}})
                     .on("mouseout", function() {
-			if (graph.graph_type = "Box Plot") {
+			if (graph.graph_type == "Box Plot") {
 				tooltip_box.hide;
 			}});
 		}
@@ -442,7 +442,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
  * @returns {unresolved}
  */
     add_vertical_line_to_box = function (stroke_width, x_position, y_lower,
-y_upper, svg, scaleY, colour_wiskers, graph) {
+            y_upper, svg, scaleY, colour_wiskers, graph) {
         svg.append("line")
             .attr("x1", x_position)
             .attr("x2", x_position)
@@ -452,11 +452,11 @@ y_upper, svg, scaleY, colour_wiskers, graph) {
             .attr("stroke-width",stroke_width)
             .attr("stroke", colour_wiskers)
             .on("mouseover", function() {
-			if (graph.graph_type = "Box Plot") {
+			if (graph.graph_type == "Box Plot") {
 				tooltip_box.show;
 			}})
             .on("mouseout", function() {
-			if (graph.graph_type = "Box Plot") {
+			if (graph.graph_type == "Box Plot") {
 				tooltip_box.hide;
 			}});
 		
@@ -562,7 +562,7 @@ y_upper, svg, scaleY, colour_wiskers, graph) {
         probe_count = options.probe_count;
         section_size = (width / probe_count);
         //graph.size_of_day_state_collumn = section_size;
-	graph_element = section_size;
+	    graph_element = section_size;
         graph.size_of_probe_collumn = section_size;
         return section_size;
     };// calculate_x_value_of_probes
@@ -582,12 +582,12 @@ y_upper, svg, scaleY, colour_wiskers, graph) {
         //day_state_count = options.day_count;
         section_size = (width / probe_count) / count; //day_state_count;
         //graph.size_of_day_state_collumn = section_size;
-	//graph_element = section_size;
+	    //graph_element = section_size;
         return section_size;
     }; // calculate_x_value_of_probes
 
 
-/* Adds disease state labels to the bottom of the graph these are before the probe*/
+    /* Adds disease state labels to the bottom of the graph these are before the probe*/
     setup_disease_state_labels = function (graph) {
         svg = graph.svg;
         scaleX = graph.scaleX;
@@ -677,12 +677,12 @@ y_upper, svg, scaleY, colour_wiskers, graph) {
                         return d.Sample_ID;
                     }
                 })
-                        /*combination of this: http://stackoverflow.com/questions/11252753/rotate-x-axis-text-in-d3
-                         and this: http://www.w3.org/TR/SVG/coords.html#TransformAttribute
-                         basically, you just have to specify the angle of the rotation and you have
-                         additional cx and cy points that you can use as the origin.
-                         therefore you make cx and cy your actual points on the graph as if it was 0 angle change
-                         you still need to make the y and x set as above */
+                /*combination of this: http://stackoverflow.com/questions/11252753/rotate-x-axis-text-in-d3
+                 and this: http://www.w3.org/TR/SVG/coords.html#TransformAttribute
+                 basically, you just have to specify the angle of the rotation and you have
+                 additional cx and cy points that you can use as the origin.
+                 therefore you make cx and cy your actual points on the graph as if it was 0 angle change
+                 you still need to make the y and x set as above */
                 .attr("class", "x_axis_diagonal_labels")
                 .style("text-anchor", "end")
                 // Even though we are rotating the text and using the cx and the cy, we need to 
@@ -1240,12 +1240,12 @@ y_upper, svg, scaleY, colour_wiskers, graph) {
         page_options = graph.page_options;
         options = graph.options;
         var watermark_width = 200;
-        var watermark_height = 100;
+        var watermark_height = 50;
+        options.watermark_width = watermark_height;
         svg.append("image")
                 .attr("xlink:href", options.watermark)
                 .attr("x", page_options.height / 2 - 100)
-                .attr("y", -page_options.width -  page_options.margin.left
-- watermark_height/3)// just out of the graphs edge
+                .attr("y", -page_options.width -  page_options.margin.left)// just out of the graphs edge
                 .attr("transform", "rotate(+90)")
                 .attr("width", watermark_width)
                 .attr("height", watermark_height);
@@ -1408,13 +1408,9 @@ y_upper, svg, scaleY, colour_wiskers, graph) {
         return tooltip_legend;
     };
 
-
-
-
-
-
     /**
-     *  http://bl.ocks.org/ZJONSSON/3918369 and http://zeroviscosity.com/d3-js-step-by-step/step-1-a-basic-pie-chart
+     *  http://bl.ocks.org/ZJONSSON/3918369 and 
+     *  http://zeroviscosity.com/d3-js-step-by-step/step-1-a-basic-pie-chart
      *  Interactive legend which allows you to display and not display the legend
      *  In a separate group to allow for scaling and also for multiple collumns
      */
@@ -1433,8 +1429,8 @@ y_upper, svg, scaleY, colour_wiskers, graph) {
         var horizontal = 0;
         var vertical = 0;
         var transformx = -2 * legendRectSize + page_options.width 
-                + options.legend_padding; // Can change this to move it up and down
-        var transformy = - page_options.margin.top / 2;
+                + page_options.margin.left + options.watermark_width; // Can change this to move it up and down
+        var transformy = 0;
         var scaleX = 1; // 1 indicates no scaling
         var scaleY = 1; // no scaling
         var scale_factor = (legend_count / max_legend_num) / 2.0;
@@ -1469,9 +1465,8 @@ y_upper, svg, scaleY, colour_wiskers, graph) {
 
         //Add a legend title
         svg.append("text")
-                .attr("x", page_options.width + options.legend_padding)//options.x_middle_title)
+                .attr("x", transformx)
                 .attr("y", 0 - (page_options.margin.top / height_divisor))
-                .attr("text-anchor", "middle")
                 .text("Legend").attr("class", options.title_class)
                 .style("font-family", options.font_style)
                 .style("font-size", options.title_text_size)
@@ -2302,7 +2297,9 @@ module.exports = biojsvisboxplot = function(init_options)
             x_buffer = x_buffer + diff_val+padding_val;
             opacity = 0.4;
 
-            svg = add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[2], svg, scaleY, colour_wiskers);
+            svg = add_vertical_line_to_box(options.stroke_width, x_buffer
+                    + box_width*0.5, box_plot_vals[0], box_plot_vals[2], svg, scaleY,
+                    colour_wiskers, graph);
         }
         else if (options.bar_graph == "yes") {
             opacity = 0.4;
@@ -2325,11 +2322,15 @@ module.exports = biojsvisboxplot = function(init_options)
               counter = 0;
             }
             x_buffer = x_buffer + diff_val+padding_val;
-            svg = add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[2], svg, scaleY, colour_wiskers);
+            svg = add_vertical_line_to_box(options.stroke_width, x_buffer
+                + box_width*0.5, box_plot_vals[0], box_plot_vals[2], svg, scaleY,
+                colour_wiskers, graph);
         } else {
             opacity = 1;
             x_buffer += (sample_type_size * (sample_type)) + (sample_type_size * 3 / 8);
-            svg = add_vertical_line_to_box(options.stroke_width, x_buffer + box_width*0.5, box_plot_vals[0], box_plot_vals[4], svg, scaleY, colour_wiskers);
+            svg = add_vertical_line_to_box(options.stroke_width, x_buffer
+                + box_width*0.5, box_plot_vals[0], box_plot_vals[4], svg, scaleY,
+                colour_wiskers, graph);
         }
         //---------------------------Want to add the correct tooltip -> this is taken as the first data point in the box ---------------------//
         var data = options.data[probe * disease_state];
@@ -2683,9 +2684,10 @@ i , graph) {
        // graph = setup_probe_labels(graph);
         graph = setup_y_axis(graph);
         graph = setup_box_plot(graph);
+        graph =  setup_watermark(graph);
         graph = setup_D3_legend(graph, graph.sample_type_list);
         //graph = setup_vertical_lines(graph);
-        graph =  setup_watermark(graph);
+
 	    // Only display the vertical lines if the user chooses so
         if (options.display.vertical_lines == "yes") {
             graph = setup_vertical_lines(graph, graph.sample_id_list);
