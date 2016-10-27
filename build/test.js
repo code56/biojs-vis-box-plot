@@ -103,7 +103,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     setup_y_axis = function (graph) {
         svg = graph.svg;
         max = graph.max_val;
-        // ########################################## Setup Y axis labels ###################################3
+        // ########### Setup Y axis labels #####
         /*
          For the y axis, the scale is linear, so we create a variable called y that we can use later
          to scale and do other things. in some people call it yScale
@@ -177,15 +177,13 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     }; // end  setup_y_axis
 
 
-
-
     /**
      * Sets up the x axis for the graph
      * @param {type} graph
      * @returns {biojsvisscatterplot.setup_x_axis.graph}
      */
     setup_x_axis = function (graph, sample_list) {
-        // ########################################## Setup X axis labels ###################################3
+        // ######################### Setup X axis labels ###################################3
         page_options = graph.page_options;
         svg = graph.svg;
         options = graph.options;
@@ -194,13 +192,13 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
          because we have samples along the bottom we use ordinal instead of linear
          we also use rangeRoundBands as it gives us some flexibility
          see here for more: https://github.com/mbostock/d3/wiki/Ordinal-Scales
-         Using randPoints gives greatest accuracy, it goes from the first to the last point, the padding is set as a
-         factor of the interval size (i.e. outer padidng = 1/2 dist between two samples) 1 = 1/2 interval distance on the outside
+         Using randPoints gives greatest accuracy, it goes from the first to the last point, the 
+        padding is set as a factor of the interval size (i.e. outer padidng = 1/2 dist between 
+        two samples) 1 = 1/2 interval distance on the outside
          2 = 1 interval dist on the outside. Have set the default to 2 */
+        
         var scaleX = d3.scale.ordinal()
-                .rangePoints([0, page_options.width], options.padding); // note that 0.4 was chosen by iterative fiddling
-
-        /*
+                .rangePoints([0, page_options.width], options.padding);         /*
          http://stackoverflow.com/questions/15713955/d3-ordinal-x-axis-change-label-order-and-shift-data-position
          The order of values for ordinal scales is the order in which you give them to .domain().
          That is, simply pass the order you want to .domain() and it should just work. */
@@ -255,19 +253,15 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
         page_options = graph.page_options;
         options = graph.options;
         // handle gaps between samples oin the x axis
-        //value = calculate_difference_between_samples(label_list, scaleX);
         // in the same function you want to store the padding
         // and you want to calculate that last padding too
         sample_type_count = 0;
-
-
         svg.selectAll(class_name)  // text for the xaxes - remember they are on a slant
                 .data(vertical_lines).enter()
                 .append("text") // when rotating the text and the size
                 .text(
                         function (d) {
-                            // If the user does't want to have labels on the x axis we don't append the
-                            // smaple type
+                            // If the user does't want to have labels on the x axis we don't append
                             var temp = get_type(d);
                             return temp;
                         }
@@ -276,8 +270,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                 .style("text-anchor", "end")
                 .attr("id", function(d) {
                     /* This is used during testing to check the correct sample
- * is displayed */
-			var point = get_type(d);
+                     * is displayed */
+			        var point = get_type(d);
                     return "xLabel-" + point.replace(/\ |(|)/g, '');
                 })
                 // Even though we are rotating the text and using the cx and the cy, we need to
