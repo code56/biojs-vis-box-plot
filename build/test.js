@@ -10,8 +10,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 
 	// USING ISHA's
-      //Setting up the max and minimum values for the graph
-    //we are trying to take into account not just the data but the lines as well
+    // Setting up the max and minimum values for the graph
+    // we are trying to take into account not just the data but the lines as well
     // and we are taking into account that we want to be able to see 0 too
     return_y_min_max_values = function (graph) {
         options = graph.options;
@@ -21,7 +21,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
         lwr_min_max_values_from_data = d3.extent(options.data,
                 function (d) {   // this will go through each row of the options.data
                     // and provide a way to access the values
-                    // you want to check that we use the highest and lowest values of the lines and at least stop at 0
+                    // you want to check that we use the highest and lowest values of 
+                    // the lines and at least stop at 0
                     lwr = (d.Expression_Value - d.Standard_Deviation);
                     temp = lwr; // this will get the y_column (usually prediction) from the row
                     // have to take into account lwr and upr
@@ -286,26 +287,30 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                 .style("font-family", options.font_style)
                 .style("font-size", options.text_size)
                 .attr("transform",
-                        /*combination of this: http://stackoverflow.com/questions/11252753/rotate-x-axis-text-in-d3
+                        /*combination of this: 
+                         * http://stackoverflow.com/questions/11252753/rotate-x-axis-text-in-d3
                          // and this: http://www.w3.org/TR/SVG/coords.html#TransformAttribute
-                         // basically, you just have to specify the angle of the rotation and you have
-                         // additional cx and cy points that you can use as the origin.
-                         // therefore you make cx and cy your actual points on the graph as if it was 0 angle change
+                         // basically, you just have to specify the angle of the rotation 
+                         // and you have additional cx and cy points that you can use as the origin.
+                         // therefore you make cx and cy your actual points on the graph as if it 
+                         // was 0 angle change
                          // you still need to make the y and x set as above*/
                         function (d, i) {
                             // actual x value if there was no rotation
                             var x_value = calculate_x_value_of_labels(d, label_list, scaleX, i, graph);
                             // actual y value if there was no rotation
                             var y_value = page_options.height + height_offset;
-                            return "rotate(" + options.x_axis_text_angle + "," + x_value + "," + y_value + ")";
+                            return "rotate(" + options.x_axis_text_angle + "," + x_value + "," 
+                                + y_value + ")";
                         }
                 )
-                /* Sets up the tooltips to display on the mouseover of the sample type label. This tooltip
-                 changes the scatter points (increases the size and changes the opacity.
-                 Note: due to stange sample type names (i.e. having unagreeable characters) it assigns
-                 a number to each sample type and calls this rather than the sample type name.
-                 This is set up in simple.js and saves in array options.sample_types where the key
-                 is the sample type */
+                /*  Sets up the tooltips to display on the mouseover of the sample type label. 
+                    This tooltip changes the scatter points (increases the size and 
+                    changes the opacity. Note: due to stange sample type names 
+                    (i.e. having unagreeable characters) it assigns
+                    a number to each sample type and calls this rather than the sample type name.
+                    This is set up in simple.js and saves in array options.sample_types where 
+                    the key is the sample type */
                 .on('mouseover', function (d) {
                    label_hover_on_feature(d, sample_type_count, collective_name, options);
                 })
