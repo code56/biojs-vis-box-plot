@@ -241,8 +241,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 
 
-
-    /**
+ /**
      * Prepares the data for the x axis and adds the labels to the x axis
      * This is to make the sample types replace the sample ids
      * Height offset is used if we are havig a second set of labels
@@ -267,19 +266,12 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                 .append("text") // when rotating the text and the size
                 .text(
                         function (d) {
-                           // var temp = get_type(d);
-                           // return temp;
-			/** Added code from Isha **/
-			// If the user does't want to have labels on the x axis we don't append the probe
-                        if(false) {
-                            if (d.mapping == "no") {return d.probe;}
-                            else {return d.probe +"*";}
-                        } else {
-                            if (d.mapping == "no") {return options.ref_name + " "+ d.probe;}
-                            else {return options.ref_name + " "+ d.probe +"*";}
+                            // If the user does't want to have labels on the x axis we don't append the
+                            // smaple type
+                            var temp = get_type(d);
+                            return temp;
                         }
-                })
-			    /** End added code **/   
+                )
                 .attr("class", "x_axis_diagonal_labels")
                 .style("text-anchor", "end")
                 .attr("id", function(d) {
@@ -299,15 +291,6 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                 ) // when rotating the text and the size
                 .style("font-family", options.font_style)
                 .style("font-size", options.text_size)
-                .style("fill", function(d){
-                    /** Added from Isha's code **/
-                    if(d.mapping == "no") {
-                        return 'black';
-                    } else {
-                        return 'red';
-                    }
-                    /** End added code **/
-                  })
                 .attr("transform",
                         /*combination of this: http://stackoverflow.com/questions/11252753/rotate-x-axis-text-in-d3
                          // and this: http://www.w3.org/TR/SVG/coords.html#TransformAttribute
@@ -382,7 +365,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
      * @param {int} box_width_wiskers
      * @returns {unresolved}
      */
- add_line_to_box = function(stroke_width, x_buffer, box_width, y_value, svg, scaleY, colour, box_width_wiskers,median) {
+    add_line_to_box = function(stroke_width, x_buffer, box_width, y_value, svg,
+            scaleY, colour, box_width_wiskers, median, graph) {
       // changes done by Isha
         if (options.bar_graph == "yes") {
           if(median == "no") {
@@ -394,8 +378,14 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                     .attr("shape-rendering","crispEdges")
                     .attr("stroke-width",stroke_width)
                     .attr("stroke", colour)
-                    .on("mouseover", tooltip_box.show)
-                    .on("mouseout", tooltip_box.hide);
+                    .on("mouseover", function() {
+			if (graph.graph_type = "Box Plot") {
+				tooltip_box.show;
+			}})
+                    .on("mouseout", function() {
+			if (graph.graph_type = "Box Plot") {
+				tooltip_box.hide;
+			}});
           }
           else {
             svg.append("line")
@@ -406,9 +396,15 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                     .attr("shape-rendering","crispEdges")
                     .attr("stroke-width",stroke_width)
                     .attr("stroke", colour)
-                    .on("mouseover", tooltip_box.show)
-                    .on("mouseout", tooltip_box.hide);
-          }
+                    .on("mouseover", function() {
+			if (graph.graph_type = "Box Plot") {
+				tooltip_box.show;
+			}})
+                    .on("mouseout", function() {
+			if (graph.graph_type = "Box Plot") {
+				tooltip_box.hide;
+			}});
+		}
 
         }
         else {
@@ -420,9 +416,15 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                   .attr("shape-rendering","crispEdges")
                   .attr("stroke-width",stroke_width)
                   .attr("stroke", colour)
-                  .on("mouseover", tooltip_box.show)
-                  .on("mouseout", tooltip_box.hide);;
-        }
+                    .on("mouseover", function() {
+			if (graph.graph_type = "Box Plot") {
+				tooltip_box.show;
+			}})
+                    .on("mouseout", function() {
+			if (graph.graph_type = "Box Plot") {
+				tooltip_box.hide;
+			}});
+		}
 
         return svg;
     }
@@ -439,7 +441,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
  * @param {string} colour_wiskers
  * @returns {unresolved}
  */
-    add_vertical_line_to_box = function (stroke_width, x_position, y_lower, y_upper, svg, scaleY, colour_wiskers) {
+    add_vertical_line_to_box = function (stroke_width, x_position, y_lower,
+y_upper, svg, scaleY, colour_wiskers, graph) {
         svg.append("line")
             .attr("x1", x_position)
             .attr("x2", x_position)
@@ -448,8 +451,15 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
             .attr("shape-rendering","crispEdges")
             .attr("stroke-width",stroke_width)
             .attr("stroke", colour_wiskers)
-            .on("mouseover", tooltip_box.show)
-            .on("mouseout", tooltip_box.hide);;
+            .on("mouseover", function() {
+			if (graph.graph_type = "Box Plot") {
+				tooltip_box.show;
+			}})
+            .on("mouseout", function() {
+			if (graph.graph_type = "Box Plot") {
+				tooltip_box.hide;
+			}});
+		
         return svg;
     };
 
@@ -498,6 +508,14 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
         return [mean - standard_deviation, mean, mean + standard_deviation];
     };
 
+    /**
+     * Creates the tooltip for a scatter point
+     * @param {string} probe
+     * @param {string} line_group
+     * @param {string} day
+     * @param {array or single string} sample_ids
+     * @returns {biojsvislinegraph.make_scatter_tooltip.tooltip_scatter}
+     */
     make_scatter_tooltip = function (probe, line_group, sample_type, sample_ids, type) {
         var tooltip_scatter = d3.tip()
                 .attr('class', 'd3-tip')
@@ -1088,17 +1106,19 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                 width_to_support_many_samples = options.box_width * 3;
             }
         }
-	/* Added during merge from Isha's code */
-	width_to_support_many_samples = 0;
-	if (options.num_sample_types * options.box_width  > options.width) {
-          // changes done by Isha
-            //Here we are compensating for any overflow that may occur due to many samples
-            options.box_width = (options.width / options.num_sample_types)/4 ;
-        }
-        else {
-          if ((options.num_sample_types * options.box_width )/(options.width/options.probe_order.length) > 1) {
-            options.box_width = (options.width * 0.70/options.probe_order.length)/options.num_sample_types;
-          }
+        /* Added during merge from Isha's code */
+        width_to_support_many_samples = 0;
+        if (graph.graph_type != "Scatter Plot") {
+            if (options.num_sample_types * options.box_width  > options.width) {
+              // changes done by Isha
+                //Here we are compensating for any overflow that may occur due to many samples
+                options.box_width = (options.width / options.num_sample_types)/4 ;
+            }
+            else {
+              if ((options.num_sample_types * options.box_width )/(options.width/options.probe_order.length) > 1) {
+                options.box_width = (options.width * 0.70/options.probe_order.length)/options.num_sample_types;
+              }
+            }
         }
         page_options.width_to_support_many_samples = width_to_support_many_samples/2;
         page_options.width = (width_to_support_many_samples * options.probe_count) + options.width;
@@ -1170,10 +1190,10 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
         // need to change the graph size to account for them
 
         svg.append("text")
-        .attr("id","hurray")
+            .attr("id","main_title") //Ariane changed this from hurray
             .attr("x", page_options.width/2)//options.x_middle_title)
             .attr("y", 0 - (page_options.margin.top /height_divisor) )
-            // .attr("text-anchor", "middle")
+            .attr("text-anchor", "middle")
             .text(options.title)
             .style("font-family", options.font_style)
             .style("font-size", options.title_text_size)
@@ -1217,15 +1237,18 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     /*  Setting up the watermark */
     setup_watermark = function (graph) {
         svg = graph.svg;
+        page_options = graph.page_options;
         options = graph.options;
-
+        var watermark_width = 200;
+        var watermark_height = 100;
         svg.append("image")
                 .attr("xlink:href", options.watermark)
                 .attr("x", page_options.height / 2 - 100)
-                .attr("y", -page_options.width - (page_options.margin_left/3))// just out of the graphs edge
+                .attr("y", -page_options.width -  page_options.margin.left
+- watermark_height/3)// just out of the graphs edge
                 .attr("transform", "rotate(+90)")
-                .attr("width", 200)
-                .attr("height", 100);
+                .attr("width", watermark_width)
+                .attr("height", watermark_height);
 
         graph.svg = svg;
         return graph;
@@ -1390,26 +1413,60 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 
 
-    /* http://bl.ocks.org/ZJONSSON/3918369 and http://zeroviscosity.com/d3-js-step-by-step/step-1-a-basic-pie-chart
-     Interactive legend which allows you to display and not display the legend*/
+    /**
+     *  http://bl.ocks.org/ZJONSSON/3918369 and http://zeroviscosity.com/d3-js-step-by-step/step-1-a-basic-pie-chart
+     *  Interactive legend which allows you to display and not display the legend
+     *  In a separate group to allow for scaling and also for multiple collumns
+     */
     setup_D3_legend = function (graph, legend_data) {
-        svg = graph.svg;
+        var svg = graph.svg;
+        var options = graph.options;
+        /* Added in variables to make the legend wrap need to add these into
+         * the options */
+        var max_text_len = 100;
+        var max_legend_num = 20; //Max number of element we allow in one row
+        var legend_count = legend_data.length; //Number of legend elements 
+        // End added variables
         var legendSpacing = 4;
-        options = graph.options;
         var legendRectSize = options.legend_rect_size;
-        page_options = graph.page_options;
-	if (options.show_legend_tooltip !== "no") {
+        var page_options = graph.page_options;
+        var horizontal = 0;
+        var vertical = 0;
+        var transformx = -2 * legendRectSize + page_options.width 
+                + options.legend_padding; // Can change this to move it up and down
+        var transformy = - page_options.margin.top / 2;
+        var scaleX = 1; // 1 indicates no scaling
+        var scaleY = 1; // no scaling
+        var scale_factor = (legend_count / max_legend_num) / 2.0;
+        /* Only performs the scaling if the legend can't fit into two collumns */ 
+        if (legend_count/2 > max_legend_num) {
+            scaleX = scale_factor;
+            scaleY = scale_factor;
+            console.log(scale_factor);
+        }
+
+	    /* Made a separate group to add the legend to so that it can be
+         * grabbed and spearated */
+        var legend_group = svg.append('g')
+                .attr('id', graph.graph_type + "-legend") //make the id
+                // dependent on which graph type it is
+                .attr("transform", "translate(" + transformx + "," + 
+                    transformy + ")" + " scale("
+                    + scaleX + "," + scaleY + ")");
+
+        if (options.show_legend_tooltip !== "no") {
             tooltip_legend = make_legend_tooltip();
             if (tooltip_legend !== null) {
                 svg.call(tooltip_legend);
             }
         } else {
-	    // tip which is displayed when hovering over a collumn. Displays the sample type 
-	    //of the collumn
-	    var tip_decoy = d3.tip()
-    	    .attr('class', 'd3-tip');
+            // tip which is displayed when hovering over a collumn. Displays the sample type 
+            //of the collumn
+            var tip_decoy = d3.tip()
+    	        .attr('class', 'd3-tip');
                 tooltip_legend = tip_decoy;
         }
+
         //Add a legend title
         svg.append("text")
                 .attr("x", page_options.width + options.legend_padding)//options.x_middle_title)
@@ -1433,19 +1490,29 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                     }
                 });
 
-
+        /* Have added in some features to make the legend not so bad
+         * If we have over 16 labels it will wrap around and produce a
+         * second collumn -> currently this uses the probe count and this will
+         * need to be something which is passed through */
 
         //Add the legend to the svg element
-        var legend = svg.selectAll('.legend')
+        var legend = legend_group.selectAll('.legend')
                 .data(legend_data) //options.probs contains the name and colour of the probes
                 .enter()
                 .append('g')
                 .attr('transform', function (d, i) {
                     var height = legendRectSize + legendSpacing;
                     // Probe count tells us how many samples we have
-                    var offset = height / 2 + options.probe_count / 2; //the 20 is to allow for the text above
-                    var horizontal = -2 * legendRectSize + page_options.width + options.legend_padding;
-                    var vertical = i * height - offset;
+                    if (legend_count > max_legend_num) {
+                        if ( i % 2 == 0) {
+                            vertical += height;
+                            horizontal = 0;
+                         } else {
+                            horizontal = legendRectSize + max_text_len;
+                        }
+                    } else {
+                        vertical = i * height;
+                    }
                     return 'translate(' + horizontal + ',' + vertical + ')';
                 })
                 .on('mouseover', tooltip_legend.show)
@@ -1481,19 +1548,20 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                 .style('opacity', 1)
                 .on('mouseover', function (d, i) {
 		    if (graph.graph_type !== "Scatter Plot") {
-			return;
+			    return;
 		    }
-                    var probe = d[0];
-                    //Gets the elements by probe and assigns colour to the line (this is started off hidden)
-                    var probe_group = document.getElementsByClassName("line-probe-" + probe.replace(/\ |(|)/g, ''));
-                   for (i = 0; i < probe_group.length; i++) {
-                        if (probe_group[i].style.opacity != 0) {
-                            d3.select(probe_group[i]).style("opacity", 0);
-                        } else {
-                            d3.select(probe_group[i]).style("opacity", 1);
-                        }
+            var probe = d[0];
+            //Gets the elements by probe and assigns colour to the line (this is started off hidden)
+            var probe_group = 
+                    document.getElementsByClassName("line-probe-" + probe.replace(/\ |(|)/g, ''));
+               for (i = 0; i < probe_group.length; i++) {
+                    if (probe_group[i].style.opacity != 0) {
+                        d3.select(probe_group[i]).style("opacity", 0);
+                    } else {
+                        d3.select(probe_group[i]).style("opacity", 1);
                     }
-                }); //end on_click button
+                }
+              }); //end on_click button
 
         //Add legend text
         legend.append('text')
@@ -1506,27 +1574,32 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
                 .style("font-family", options.font_style)
                 .style("font-size", options.text_size)
                 .style('opacity', 1)
-		.style("fill", function(probeInfo){
-                  if(probeInfo[2] == "no") {
-                    return 'black';
-                  }
-                  else {
-                    return 'red';
-                  }
-                })
+		        .style("fill", function(probeInfo){
+                    if(probeInfo[2] == "no") {
+                      return 'black';
+                    }
+                    else {
+                      return 'red';
+                    }
+                  })
                 .text(function (probeInfo) {
-		   if(false) {
-                          if (probeInfo[2] == "no") {return probeInfo[0];}
-                          else {return probeInfo[0] +"*";}
+		            if(false) {
+                        if (probeInfo[2] == "no") {
+                            return probeInfo[0];
+                        } else {
+                            return probeInfo[0] +"*";
                         }
-                      else {
+                    } else {
                         // Ariane -> ref_name was not defined it must be
                         // a global variable set elsewhere, I have moved it to
                         // the options
-                        if (probeInfo[2] == "no") {return options.ref_name + " "+ probeInfo[0];}
-                        else {return options.ref_name + " "+ probeInfo[0] +"*";}
+                        if (probeInfo[2] == "no") {
+                            return options.ref_name + " "+ probeInfo[0];
+                        } else {
+                            return options.ref_name + " "+ probeInfo[0] +"*";
+                        }
                       }
- 		});
+ 		        });
         graph.svg = svg;
         return graph;
     };
@@ -2293,29 +2366,44 @@ module.exports = biojsvisboxplot = function(init_options)
 
               if(box_width < 5){
                 //Add min line
-                svg = add_line_to_box(options.stroke_width, x_buffer , box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers, "no");
+                svg = add_line_to_box(options.stroke_width, x_buffer
+                    , box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers,
+                    "no", graph);
                 //Add max line
-                svg = add_line_to_box(options.stroke_width, x_buffer , box_width, box_plot_vals[2], svg, scaleY, colour_wiskers, box_width_wiskers, "no");
+                svg = add_line_to_box(options.stroke_width, x_buffer_width, 
+                    box_plot_vals[2], svg, scaleY, colour_wiskers, box_width_wiskers,
+                     graph);
               }
               else {
                 //Add min line
-                svg = add_line_to_box(options.stroke_width, x_buffer , box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers, "yes");
+                svg = add_line_to_box(options.stroke_width, x_buffer
+                    , box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers,
+                    "yes", graph);
                 //Add max line
-                svg = add_line_to_box(options.stroke_width, x_buffer , box_width, box_plot_vals[2], svg, scaleY, colour_wiskers, box_width_wiskers, "yes");
+                svg = add_line_to_box(options.stroke_width, x_buffer
+                    , box_width, box_plot_vals[2], svg, scaleY, colour_wiskers, box_width_wiskers,
+                    "yes", graph);
               }
               //Add median lines
-              svg = add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[1], svg, scaleY, colour_box, box_width_wiskers,"yes");
+              svg = add_line_to_box(options.stroke_width, x_buffer, box_width,
+                    box_plot_vals[1], svg, scaleY, colour_box, box_width_wiskers,"yes", graph);
 
             //Add outside lines
-            svg = add_vertical_line_to_box(options.stroke_width, x_buffer, 0, box_plot_vals[1], svg, scaleY, colour_box);
-            svg = add_vertical_line_to_box(options.stroke_width, x_buffer + box_width, 0, box_plot_vals[1], svg, scaleY, colour_box);
+            svg = add_vertical_line_to_box(options.stroke_width, x_buffer, 0,
+                box_plot_vals[1], svg, scaleY, colour_box, graph);
+            svg = add_vertical_line_to_box(options.stroke_width, x_buffer
+                + box_width, 0, box_plot_vals[1], svg, scaleY, colour_box, graph);
         } else {
            //Add max line
-            svg = add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers,"yes");
+            svg = add_line_to_box(options.stroke_width, x_buffer, box_width,
+                box_plot_vals[0], svg, scaleY, colour_wiskers, box_width_wiskers,"yes", graph);
             //Add median line
-            svg = add_line_to_box(options.stroke_width, x_buffer + box_width*.25, box_width*0.5, box_plot_vals[2], svg, scaleY, colour_median, 0,"yes");
+            svg = add_line_to_box(options.stroke_width, x_buffer
+                + box_width*.25, box_width*0.5, box_plot_vals[2], svg, scaleY, colour_median,
+                0,"yes", graph);
             //Add max line
-            svg = add_line_to_box(options.stroke_width, x_buffer, box_width, box_plot_vals[4], svg, scaleY, colour_wiskers, box_width_wiskers,"yes");
+            svg = add_line_to_box(options.stroke_width, x_buffer, box_width,
+                box_plot_vals[4], svg, scaleY, colour_wiskers, box_width_wiskers,"yes", graph);
         }
         //Option to allow the user to test their values
         if (options.test == "yes") {

@@ -216,10 +216,9 @@ d3.tsv(data_url,function (error,data){
 	/******** End Options for Data order *****************************************/
         /******** Options for Sizing *****************************************/
         legend_padding: 100,
-        legend_rect_size: 20,
+        legend_rect_size: 15,
     	height: 400,
-
-        margin:{top: 50, left: 200, bottom: 300, right: 150},
+        margin:{top: 50, left: 50, bottom: 150, right: 300},
         initial_padding: 10,
         x_axis_label_padding: 10,//padding for the x axis labels (how far below the graph)
         text_size: "12px",
