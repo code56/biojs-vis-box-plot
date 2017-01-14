@@ -1,7 +1,7 @@
 {
   "name": "biojs-vis-box-plot",
   "description": "BioJS component to provide a box plot graph or bar graph hosted in Stemformatics",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "homepage": "https://github.com/ArianeMora/biojs-vis-box-plot",
   "author": {
     "name": "ArianeMora",
