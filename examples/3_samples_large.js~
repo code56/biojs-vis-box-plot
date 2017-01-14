@@ -150,6 +150,23 @@ d3.tsv(data_url,function (error,data){
 
     //The main options for the graph
     var options = {
+
+         increment: 0.2,//number_of_increments * increment_value, // To double the number of increments ( mutliply by 2, same for
+
+	        // Ariane -> added options for anything which as global previously
+            ref_name: "legend",
+
+            // Ariane -> any options edited to get up and running
+
+            horizontal_lines: [["Detection Threshold ", "green", 8], ["Median ", "blue",
+6]],
+            sortByOption: "Disease_state",//sortByOption, NEED TO CHANGE BACK FOR ISHA
+            show_min_y_axis: false,//show_min_y_axis,NEED TO CHANGE BACK FOR ISHA isha
+            sample_type_order: "DermalFibroblast, hONS", /*dataset_data["sampleTypeDisplayOrder"],// "DermalFibroblast, hONS", // "BM MSC,BM erythropoietic cells CD235A+,BM granulopoietic cells CD11B+,BM
+hematopoietic cells CD45+,Developing cortex neural progenitor cells,Ventral
+midbrain neural progenitor cells,Olfactory lamina propria derived stem
+cells",*/
+
 	jitter: "no",
         test: "yes", //Only used to test the data -> outputs the values to a file on the computer
         test_path: "/home/ariane/Documents/stemformatics/bio-js-box-plot/test/box_plot_test.csv", //Path to save the test file to including name 
@@ -181,7 +198,7 @@ d3.tsv(data_url,function (error,data){
         x_axis_label_padding: 10,//padding for the x axis labels (how far below the graph)
         text_size: "12px",
         title_text_size: "16px",
-        increment: number_of_increments * 0.5, // To double the number of increments ( mutliply by 2, same for 
+        //increment: number_of_increments * 0.5, // To double the number of increments ( mutliply by 2, same for 
         // reducing. Number of increments is how many numbers are displayed on the y axis. For none to
         // be displayed multiply by 0
         display: {hoverbars: "yes", error_bars: "yes", legend: "yes", horizontal_lines: "no", vertical_lines: "no", x_axis_labels: "yes", y_axis_title: "yes", horizontal_grid_lines: "yes"},
@@ -206,7 +223,7 @@ d3.tsv(data_url,function (error,data){
 	error_stroke_width: "1px",
         error_dividor:100,//100 means error bars will not show when error < 1% value 
         //horizontal lines takes a name, colour and the yvalue. If no colour is given one is chosen at random
-        horizontal_lines: [["Detection Threshold", "green", 5], ["Median", , 8.93]],
+       // horizontal_lines: [["Detection Threshold", "green", 5], ["Median", , 8.93]],
         horizontal_line_value_column: 'value',
         //to have horizontal grid lines = width (to span accross the grid), otherwise = 0
         horizontal_grid_lines: width,
@@ -216,6 +233,8 @@ d3.tsv(data_url,function (error,data){
 	legend_text: "yes",
 	legend_shorten_text: "yes",
 	substring_legend_length: 15,
+    	show_legend_tooltip: "no",
+        legend_toggle_opacity: "no", 
        //default number of colours iis 39 (before it reitterates over it again)
         number_of_colours: 39,
         //2 is the chosen padding. On either side there will be padding = to the interval between the points
