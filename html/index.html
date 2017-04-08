@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Style sheet for the graphs -->
+        <link href="Graph/css/biojs-vis-scatter-plot.css" rel="stylesheet" type="text/css" />
+
+        <!-- Required JS files for D3 and jqery -->
+        <script src="//d3js.org/d3.v3.min.js"></script>
+        <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>           
+        <script src="lib/d3-context-menu.js"></script>
+
+
+        <!-- Graph JavaScript files -->
+        <script src="Graph/examples/static_variables.js"></script>
+        <script src="Graph/examples/violin_simple.js"></script>
+        <script src="Graph/examples/many_samples_large.js"></script>
+        <script src="Graph/examples/many_samples_bar.js"></script>        
+        <script src="Graph/examples/3_samples_box.js"></script>
+
+        <script src="Graph/lib/features.js"></script>
+        <script src="Graph/lib/axis.js"></script>
+        <script src="Graph/lib/box_bar_line.js"></script>
+        <script src="Graph/lib/general.js"></script>
+        <script src="Graph/lib/index_violin.js"></script>
+        <script src="Graph/lib/index_box.js"></script>
+        <script src="Graph/lib/index.js"></script>
+
+        <!-- JavaScript files for displaying them -->
+        <script src="javaScript/multiview.js"></script>
+    </head>
+    <body>
+        <div>
+            <div style="clear:both;"></div>
+            <div style="">
+                <div style="float:left;" id="graphScatterdiv"></div>
+                <div style="float:left;" id="graphBoxdiv"></div>
+                <div style="float:left;" id="graphBardiv"></div>
+                <div style="float:left;" id="graphViolindiv"></div>
+            </div>
+
+            <script>
+                // A function which can get called to display the graphs in a 
+                // Specific div.
+                var multiview = function (divID) {
+                    var options = setup_data_scatter("#" + divID);
+                    var scale_x = 0.3;
+                    var scale_y = 0.3;
+                    init_scatter(options);
+                };
+
+                // Calling the graph script on the div above. Passing it 
+                // the ID of the div.
+                multiview("graphScatterdiv");
+
+            </script>
+            <script>
+                var box_view = function (divID) {
+                    var options = setup_data_box("#" + divID);
+                    var scale_x = 0.3;
+                    var scale_y = 0.3;
+                    init_box(options);
+                };
+                box_view("graphBoxdiv");
+            </script>
+
+            <script>
+                var bar_view = function (divID) {
+                    var options = setup_data_bar("#" + divID);
+                    var scale_x = 0.3;
+                    var scale_y = 0.3;
+                    init_box(options);
+                };
+                bar_view("graphBardiv");
+
+            </script>
+            <script>
+                var violin_view = function (divID) {
+                    var options = setup_data_violin("#" + divID);
+                    var scale_x = 0.3;
+                    var scale_y = 0.3;
+                    init_violin(options);
+                };
+                violin_view("graphViolindiv");
+
+            </script>   
+
+        </div>        
+
+    </body>
+</html>
