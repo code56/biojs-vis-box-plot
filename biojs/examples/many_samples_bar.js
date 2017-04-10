@@ -38,9 +38,9 @@ var tooltip = d3.tip()
     });
 
 //The url's to the data displayed
-data_url= '../data/ds_id_5003_scatter_gata3.tsv';
-//data_url = '../data/ds_id_2000_scatter_stat1.tsv';
-//data_url = '../data/ds_id_2000_scatter_pdgfd.tsv';
+data_url= '../data/gata3.tsv';
+//data_url = '../data/stat1.tsv';
+//data_url = '../data/pdgfd.tsv';
 
 
 //These are all the options which get passed to the graphs on the stemformatics website

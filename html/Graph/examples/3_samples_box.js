@@ -2,7 +2,7 @@
 setup_data_box = function (svgID) {
 
     // Your data URL
-    var data_url = 'Graph/data/test_simple.tsv';
+    var data_url = 'Graph/data/stat1.tsv';
 
     var increment_value = 6;
     var graph_box_width = 900;

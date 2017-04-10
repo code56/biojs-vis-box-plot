@@ -2,7 +2,7 @@
 setup_data_bar = function (svgID) {
 
     // Your data URL
-    var data_url = 'Graph/data/test.tsv';
+    var data_url = 'Graph/data/gata3.tsv';
 
     var increment_value = 6;
     var graph_box_width = 900;
